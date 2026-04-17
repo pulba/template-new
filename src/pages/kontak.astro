@@ -1,0 +1,182 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Map from '../components/Map';
+import { Mail, Phone, MapPin, Clock, MessageCircle, User, Type, AlignLeft, Send } from 'lucide-react';
+import { getEntry } from 'astro:content';
+
+const identity = await getEntry('settings', 'identity');
+const siteConfig = identity?.data || { 
+	schoolName: "Nama Sekolah", 
+	whatsapp: "62812345678",
+	email: "info@sekolah.sch.id",
+	phone: "(021) 1234-5678",
+	address: "Jl. Pendidikan No. 123, Kota Pendidikan, 12345",
+	openingHours: "Senin - Jumat: 07.00 - 16.00",
+	openingHoursSat: "Sabtu: 08.00 - 12.00",
+	mapLatitude: -6.2088,
+	mapLongitude: 106.8456
+};
+---
+
+<Layout title={`Kontak - ${siteConfig.schoolName}`}>
+	<Navbar />
+	
+	<main class="bg-stone-50 dark:bg-stone-950 transition-colors duration-300">
+		<!-- Header -->
+		<section class="py-16 md:py-24 bg-stone-900 dark:bg-stone-900/50 text-white relative overflow-hidden">
+      <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+				<h1 class="text-3xl sm:text-4xl lg:text-6xl font-bold mb-6 tracking-tight">Hubungi Kami</h1>
+				<p class="text-lg sm:text-xl text-stone-400 max-w-2xl mx-auto leading-relaxed">
+					Punya pertanyaan? Kami siap membantu Anda mendapatkan informasi yang dibutuhkan mengenai sekolah kami.
+				</p>
+			</div>
+		</section>
+
+		<section class="py-24">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+					<!-- Info Kontak -->
+					<div class="space-y-12">
+						<div>
+							<h2 class="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100 mb-8 tracking-tight">Informasi Kontak</h2>
+							<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+								<div class="bg-white dark:bg-stone-900 p-8 rounded-2xl shadow-sm border border-stone-100 dark:border-stone-800 group hover:shadow-md transition-all">
+									<div class="w-12 h-12 bg-stone-50 dark:bg-stone-800 rounded-xl flex items-center justify-center text-stone-900 dark:text-stone-100 mb-6 group-hover:scale-110 transition-transform">
+										<Phone size={24} />
+									</div>
+									<h3 class="font-bold text-stone-900 dark:text-stone-100 mb-2">Telepon</h3>
+									<p class="text-stone-600 dark:text-stone-400 text-sm">{siteConfig.phone}</p>
+									{siteConfig.phone2 && <p class="text-stone-600 dark:text-stone-400 text-sm">{siteConfig.phone2}</p>}
+								</div>
+								<div class="bg-white dark:bg-stone-900 p-8 rounded-2xl shadow-sm border border-stone-100 dark:border-stone-800 group hover:shadow-md transition-all">
+									<div class="w-12 h-12 bg-stone-50 dark:bg-stone-800 rounded-xl flex items-center justify-center text-stone-900 dark:text-stone-100 mb-6 group-hover:scale-110 transition-transform">
+										<Mail size={24} />
+									</div>
+									<h3 class="font-bold text-stone-900 dark:text-stone-100 mb-2">Email</h3>
+									<p class="text-stone-600 dark:text-stone-400 text-sm break-all">{siteConfig.email}</p>
+									{siteConfig.email2 && <p class="text-stone-600 dark:text-stone-400 text-sm break-all">{siteConfig.email2}</p>}
+								</div>
+								<div class="bg-white dark:bg-stone-900 p-8 rounded-2xl shadow-sm border border-stone-100 dark:border-stone-800 group hover:shadow-md transition-all">
+									<div class="w-12 h-12 bg-stone-50 dark:bg-stone-800 rounded-xl flex items-center justify-center text-stone-900 dark:text-stone-100 mb-6 group-hover:scale-110 transition-transform">
+										<MapPin size={24} />
+									</div>
+									<h3 class="font-bold text-stone-900 dark:text-stone-100 mb-2">Alamat</h3>
+									<p class="text-stone-600 dark:text-stone-400 text-sm leading-relaxed">{siteConfig.address}</p>
+								</div>
+								<div class="bg-white dark:bg-stone-900 p-8 rounded-2xl shadow-sm border border-stone-100 dark:border-stone-800 group hover:shadow-md transition-all">
+									<div class="w-12 h-12 bg-stone-50 dark:bg-stone-800 rounded-xl flex items-center justify-center text-stone-900 dark:text-stone-100 mb-6 group-hover:scale-110 transition-transform">
+										<Clock size={24} />
+									</div>
+									<h3 class="font-bold text-stone-900 dark:text-stone-100 mb-2">Jam Operasional</h3>
+									<p class="text-stone-600 dark:text-stone-400 text-sm">{siteConfig.openingHours}</p>
+									{siteConfig.openingHoursSat && <p class="text-stone-600 dark:text-stone-400 text-sm">{siteConfig.openingHoursSat}</p>}
+								</div>
+							</div>
+						</div>
+						
+						<!-- Interactive Map -->
+						<div class="aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-stone-900 ring-1 ring-stone-900/5">
+							<Map 
+								client:only="react" 
+								center={[siteConfig.mapLatitude || -6.2088, siteConfig.mapLongitude || 106.8456]} 
+								zoom={15} 
+								markerText={siteConfig.schoolName} 
+							/>
+						</div>
+					</div>
+
+					<!-- Form Kontak -->
+					<div class="bg-white dark:bg-stone-900 p-8 sm:p-12 rounded-[2.5rem] shadow-2xl border border-stone-100 dark:border-stone-800 sticky top-24">
+						<div class="mb-12">
+              <h2 class="text-3xl font-bold text-stone-900 dark:text-stone-100 mb-3 tracking-tight">Kirim Pesan</h2>
+              <p class="text-stone-500 dark:text-stone-400">Tim kami akan merespon pesan Anda secepat mungkin melalui WhatsApp.</p>
+            </div>
+
+						<form id="whatsapp-form" class="space-y-8">
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+								<div class="space-y-3">
+									<label class="text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em] ml-1">Nama Lengkap</label>
+									<div class="relative group">
+                    <span class="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-stone-900 dark:group-focus-within:text-stone-100 transition-colors">
+                      <User size={18} />
+                    </span>
+                    <input type="text" id="form-name" required class="w-full pl-12 pr-6 py-4 bg-stone-50 dark:bg-stone-800/50 border border-stone-100 dark:border-stone-800 rounded-2xl focus:ring-2 focus:ring-stone-900 dark:focus:ring-stone-100 focus:bg-white dark:focus:bg-stone-800 focus:border-transparent outline-none transition-all dark:text-white placeholder:text-stone-300" placeholder="Masukkan nama Anda" />
+                  </div>
+								</div>
+								<div class="space-y-3">
+									<label class="text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em] ml-1">Alamat Email</label>
+									<div class="relative group">
+                    <span class="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-stone-900 dark:group-focus-within:text-stone-100 transition-colors">
+                      <Mail size={18} />
+                    </span>
+                    <input type="email" id="form-email" required class="w-full pl-12 pr-6 py-4 bg-stone-50 dark:bg-stone-800/50 border border-stone-100 dark:border-stone-800 rounded-2xl focus:ring-2 focus:ring-stone-900 dark:focus:ring-stone-100 focus:bg-white dark:focus:bg-stone-800 focus:border-transparent outline-none transition-all dark:text-white placeholder:text-stone-300" placeholder="email@contoh.com" />
+                  </div>
+								</div>
+							</div>
+							<div class="space-y-3">
+								<label class="text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em] ml-1">Subjek Pertanyaan</label>
+								<div class="relative group">
+                  <span class="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-stone-900 dark:group-focus-within:text-stone-100 transition-colors">
+                    <Type size={18} />
+                  </span>
+								  <input type="text" id="form-subject" required class="w-full pl-12 pr-6 py-4 bg-stone-50 dark:bg-stone-800/50 border border-stone-100 dark:border-stone-800 rounded-2xl focus:ring-2 focus:ring-stone-900 dark:focus:ring-stone-100 focus:bg-white dark:focus:bg-stone-800 focus:border-transparent outline-none transition-all dark:text-white placeholder:text-stone-300" placeholder="Apa yang ingin Anda tanyakan?" />
+                </div>
+							</div>
+							<div class="space-y-3">
+								<label class="text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em] ml-1">Isi Pesan</label>
+								<div class="relative group">
+                  <span class="absolute left-5 top-6 text-stone-400 group-focus-within:text-stone-900 dark:group-focus-within:text-stone-100 transition-colors">
+                    <AlignLeft size={18} />
+                  </span>
+								  <textarea id="form-message" required rows={4} class="w-full pl-12 pr-6 py-4 bg-stone-50 dark:bg-stone-800/50 border border-stone-100 dark:border-stone-800 rounded-2xl focus:ring-2 focus:ring-stone-900 dark:focus:ring-stone-100 focus:bg-white dark:focus:bg-stone-800 focus:border-transparent outline-none transition-all resize-none dark:text-white placeholder:text-stone-300" placeholder="Tuliskan detail pesan Anda di sini..."></textarea>
+                </div>
+							</div>
+
+							<div class="flex justify-end pt-4">
+                <button type="submit" class="w-fit bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 px-8 py-3.5 rounded-xl font-bold text-base hover:bg-stone-800 dark:hover:bg-white transition-all shadow-lg shadow-stone-900/10 dark:shadow-stone-100/5 group flex items-center justify-center gap-2">
+                  Kirim via WhatsApp 
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.414 0 .018 5.393 0 12.03c0 2.122.54 4.197 1.57 6.05L0 24l6.117-1.605a11.845 11.845 0 0 0 5.933 1.57h.005c6.632 0 12.028-5.391 12.03-12.027a11.85 11.85 0 0 0-3.481-8.528"/>
+                  </svg>
+                </button>
+              </div>
+						</form>
+						
+						<div class="mt-12 pt-12 border-t border-stone-100 dark:border-stone-800 flex flex-col items-center">
+							<p class="text-stone-400 dark:text-stone-500 text-sm text-center mb-8">Atau chat langsung tanpa formulir</p>
+							<a href={`https://wa.me/${siteConfig.whatsapp}`} target="_blank" class="w-fit bg-green-500 text-white px-8 py-3.5 rounded-xl font-bold text-base hover:bg-green-600 transition-all shadow-lg shadow-green-500/20 flex items-center justify-center gap-2">
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.414 0 .018 5.393 0 12.03c0 2.122.54 4.197 1.57 6.05L0 24l6.117-1.605a11.845 11.845 0 0 0 5.933 1.57h.005c6.632 0 12.028-5.391 12.03-12.027a11.85 11.85 0 0 0-3.481-8.528"/>
+                </svg> WhatsApp Direct Chat
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+	
+  <script is:inline define:vars={{ whatsapp: siteConfig.whatsapp, schoolName: siteConfig.schoolName }}>
+    const form = document.getElementById('whatsapp-form');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('form-name').value;
+        const email = document.getElementById('form-email').value;
+        const subject = document.getElementById('form-subject').value;
+        const message = document.getElementById('form-message').value;
+        
+        const text = `Halo *${schoolName}*,\n\nSaya Nama: *${name}* Email: *${email}* ingin bertanya mengenai: *${subject}*\n\n*Pesan:*\n${message}`;
+        
+        const waUrl = `https://wa.me/${whatsapp}?text=${encodeURIComponent(text)}`;
+        window.open(waUrl, '_blank');
+      });
+    }
+  </script>
+
+	<Footer />
+</Layout>

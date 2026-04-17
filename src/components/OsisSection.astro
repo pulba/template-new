@@ -1,0 +1,72 @@
+---
+import { ArrowRight } from "lucide-react";
+import { getEntry } from 'astro:content';
+
+const osisEntry = await getEntry('settings', 'osis');
+const osis = osisEntry?.data || { cabinetName: "OSIS", period: "2024/2025", members: [] };
+
+// Ambil hanya 4 pengurus pertama (Ketua, Wakil, Sekretaris, Bendahara biasanya di urutan awal)
+const topMembers = osis.members?.slice(0, 4) || [];
+---
+
+<section class="py-24 bg-white dark:bg-stone-950 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div class="max-w-2xl">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-1 bg-amber-500 rounded-full" />
+                    <span class="text-amber-600 dark:text-amber-400 font-bold tracking-widest uppercase text-sm">
+                        Struktur Organisasi
+                    </span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-stone-900 dark:text-stone-100 mb-4 tracking-tight">
+                    Pengurus <span class="text-amber-500">OSIS</span> {osis.period}
+                </h2>
+                <p class="text-lg text-stone-600 dark:text-stone-400">
+                    Mengenal lebih dekat para pemimpin muda di balik {osis.cabinetName} yang berdedikasi untuk kemajuan siswa.
+                </p>
+            </div>
+            
+            <a
+                href="/profil/osis"
+                class="inline-flex items-center gap-2 px-8 py-4 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-full font-bold hover:bg-stone-800 dark:hover:bg-white transition-all shadow-xl group"
+            >
+                Lihat Struktur Lengkap
+                <ArrowRight size={20} class="group-hover:translate-x-1 transition-transform" />
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {topMembers.map((member) => (
+                <div class="group relative">
+                    {/* Decorative Background */}
+                    <div class="absolute inset-0 bg-amber-500/10 rounded-3xl translate-x-3 translate-y-3 -z-10 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-500" />
+                    
+                    <div class="bg-white dark:bg-stone-900 p-4 rounded-3xl border border-stone-100 dark:border-stone-800 shadow-sm group-hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                        <div class="aspect-[4/5] rounded-2xl overflow-hidden mb-6 relative">
+                            <img
+                                src={member.image}
+                                alt={member.name}
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                            <div class="absolute inset-0 bg-gradient-to-t from-stone-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                <span class="text-white text-xs font-bold uppercase tracking-widest border border-white/30 px-3 py-1 rounded-full backdrop-blur-md">
+                                    {osis.cabinetName}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center pb-4">
+                            <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100 mb-1">
+                                {member.name}
+                            </h3>
+                            <p class="text-amber-600 dark:text-amber-400 font-medium text-sm">
+                                {member.role}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>

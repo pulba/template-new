@@ -1,0 +1,94 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import NewsSection from "../../components/NewsSection.astro";
+import { ChevronRight } from "lucide-react";
+
+const allNews = await getCollection("berita");
+const sortedNews = allNews.sort(
+	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
+);
+
+// Category Filtered Data for Portal Blocks
+const akademikNews = sortedNews.filter((n) => n.data.category === "Akademik");
+const beritaUmum = sortedNews.filter((n) => n.data.category === "Berita");
+
+const identity = await getEntry("settings", "identity");
+const siteConfig = identity?.data || { schoolName: "Nama Sekolah" };
+---
+
+<Layout
+	title="Berita & Artikel"
+	description="Kumpulan berita, artikel edukasi, dan dokumentasi kegiatan sekolah."
+>
+	<Navbar />
+
+	<main
+		class="bg-white dark:bg-stone-950 min-h-screen transition-colors duration-300"
+	>
+		{/* Page Header */}
+		<div
+			class="bg-stone-50 dark:bg-stone-900/50 border-b border-stone-100 dark:border-stone-800 py-12"
+		>
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<nav
+					class="flex items-center gap-2 text-xs font-bold text-stone-400 uppercase tracking-widest mb-6"
+				>
+					<a
+						href="/"
+						class="hover:text-amber-600 transition-colors cursor-pointer"
+						>Home</a
+					>
+					<ChevronRight size={12} />
+					<span class="text-stone-900 dark:text-white"
+						>Berita & Artikel</span
+					>
+				</nav>
+				<h1
+					class="text-2xl sm:text-5xl lg:text-5xl font-extrabold text-stone-900 dark:text-white mb-6 tracking-tight uppercase border-l-8 border-amber-600 pl-6"
+				>
+					Portal Berita Sekolah
+				</h1>
+				<p
+					class="text-stone-500 dark:text-stone-400 max-w-2xl leading-relaxed italic"
+				>
+					Informasi terkini, pengumuman resmi, dan artikel edukatif
+					dari {siteConfig.schoolName}.
+				</p>
+			</div>
+		</div>
+
+		<section class="mt-5 pb-20">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="space-y-0">
+					{/* Block 1: Featured Grid (Terbaru) */}
+					<NewsSection
+						title="Utama & Terbaru"
+						posts={sortedNews}
+						layout="grid-hero"
+					/>
+
+					{/* Block 2: Akademik (Feature Style) */}
+					<NewsSection
+						title="Akademik"
+						category="Akademik"
+						posts={akademikNews}
+						layout="feature-list"
+					/>
+
+					{/* Block 3: Berita Umum (Grid Style) */}
+					<NewsSection
+						title="Berita Sekolah"
+						category="Berita"
+						posts={beritaUmum}
+						layout="cards-3col"
+					/>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<Footer />
+</Layout>

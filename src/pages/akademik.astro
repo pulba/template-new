@@ -1,0 +1,165 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import { BookOpen, Star, Trophy, Palette, Music, Dumbbell } from 'lucide-react';
+import { getEntry } from 'astro:content';
+
+const identity = await getEntry('settings', 'identity');
+const siteConfig = identity?.data || { schoolName: "Nama Sekolah" };
+
+const akademikEntry = await getEntry('settings', 'akademik');
+const akademik = akademikEntry?.data || {
+	headline: "Akademik & Kesiswaan",
+	description: "Kurikulum yang menantang dan kegiatan ekstrakurikuler yang beragam untuk mengembangkan potensi terbaik setiap siswa.",
+	curriculumTitle: "Kurikulum Merdeka Plus",
+	curriculumDesc: "",
+	curriculumFeatures: [],
+	curriculumImage: "",
+	statsGraduation: "100%",
+	statsUni: "85%",
+	extraHeadline: "Ekstrakurikuler",
+	extraDesc: "",
+	extraGroups: [],
+	awardsHeadline: "Galeri Prestasi",
+	awardsDesc: "",
+	awardsTotal: "0+",
+	featuredAwards: []
+};
+
+// Map icons roughly based on category name
+const getIcon = (name: string) => {
+	const lower = name.toLowerCase();
+	if (lower.includes('olahraga')) return Dumbbell;
+	if (lower.includes('seni')) return Palette;
+	if (lower.includes('sains') || lower.includes('keagamaan')) return Star;
+	if (lower.includes('kepemimpinan')) return Music;
+	if (lower.includes('bahasa')) return BookOpen;
+	return Star;
+};
+---
+
+<Layout title={`${akademik.headline} - ${siteConfig.schoolName}`}>
+	<Navbar />
+	
+	<main class="bg-white dark:bg-stone-950 transition-colors duration-300">
+		<!-- Header -->
+		<section class="py-16 md:py-24 bg-stone-900 text-white">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+				<h1 class="text-3xl sm:text-4xl lg:text-6xl font-bold mb-6 tracking-tight">{akademik.headline}</h1>
+				<p class="text-lg sm:text-xl text-stone-400 max-w-2xl mx-auto leading-relaxed">
+					{akademik.description}
+				</p>
+			</div>
+		</section>
+
+		<!-- Kurikulum -->
+		<section class="py-24">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+					<div>
+						<div class="w-16 h-16 bg-stone-100 dark:bg-stone-900 rounded-2xl flex items-center justify-center text-stone-900 dark:text-stone-100 mb-8">
+							<BookOpen size={32} />
+						</div>
+						<h2 class="text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100 mb-6 tracking-tight">{akademik.curriculumTitle}</h2>
+						<p class="text-base md:text-lg text-stone-600 dark:text-stone-400 leading-relaxed mb-8">
+							{akademik.curriculumDesc}
+						</p>
+						<div class="space-y-4">
+							{akademik.curriculumFeatures?.map((item) => (
+								<div class="flex items-center gap-3">
+									<div class="w-6 h-6 bg-stone-900 rounded-full flex items-center justify-center text-white">
+										<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+										</svg>
+									</div>
+									<span class="font-bold text-stone-900 dark:text-stone-100">{item}</span>
+								</div>
+							))}
+						</div>
+					</div>
+					<div class="bg-stone-50 dark:bg-stone-900/50 p-6 sm:p-8 rounded-lg border border-stone-100 dark:border-stone-800">
+						<img src={akademik.curriculumImage || "https://picsum.photos/seed/curriculum/800/600"} alt="Kurikulum" class="rounded-2xl shadow-xl mb-8 w-full object-cover aspect-[4/3]" referrerpolicy="no-referrer" />
+						<div class="grid grid-cols-2 gap-4">
+							<div class="bg-white dark:bg-stone-900 p-4 sm:p-6 rounded-2xl text-center shadow-sm">
+								<p class="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100 mb-1">{akademik.statsGraduation}</p>
+								<p class="text-[10px] sm:text-xs text-stone-500 dark:text-stone-400 font-bold uppercase tracking-wider">Lulus Ujian</p>
+							</div>
+							<div class="bg-white dark:bg-stone-900 p-4 sm:p-6 rounded-2xl text-center shadow-sm">
+								<p class="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100 mb-1">{akademik.statsUni}</p>
+								<p class="text-[10px] sm:text-xs text-stone-500 dark:text-stone-400 font-bold uppercase tracking-wider">Masuk PTN</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Ekstrakurikuler -->
+		<section class="py-24 bg-stone-50 dark:bg-stone-900/40 transition-colors">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center max-w-3xl mx-auto mb-20">
+					<h2 class="text-4xl font-bold text-stone-900 dark:text-stone-100 mb-6 tracking-tight">{akademik.extraHeadline}</h2>
+					<p class="text-lg text-stone-600 dark:text-stone-400">{akademik.extraDesc}</p>
+				</div>
+				
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+					{akademik.extraGroups?.map((group) => {
+						const Icon = getIcon(group.name);
+						return (
+							<div class="bg-white dark:bg-stone-900 p-10 rounded-lg shadow-sm border border-stone-100 dark:border-stone-800 group hover:shadow-xl transition-all duration-300">
+								<div class="w-12 h-12 bg-stone-50 dark:bg-stone-800 rounded-xl flex items-center justify-center text-stone-900 dark:text-stone-100 mb-6 group-hover:scale-110 transition-transform">
+									<Icon size={24} />
+								</div>
+								<h3 class="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-6">{group.name}</h3>
+								<ul class="space-y-3">
+									{group.items.map((item) => (
+										<li class="flex items-center gap-3 text-stone-600 dark:text-stone-400">
+											<div class="w-1.5 h-1.5 rounded-full bg-stone-300 dark:bg-stone-700"></div>
+											{item}
+										</li>
+									))}
+								</ul>
+							</div>
+						);
+					})}
+				</div>
+			</div>
+		</section>
+
+		<!-- Prestasi -->
+		<section class="py-24">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+					<div class="max-w-2xl">
+						<h2 class="text-4xl font-bold text-stone-900 dark:text-stone-100 mb-6 tracking-tight">{akademik.awardsHeadline}</h2>
+						<p class="text-lg text-stone-600 dark:text-stone-400 leading-relaxed">
+							{akademik.awardsDesc}
+						</p>
+					</div>
+					<div class="flex items-center gap-3 bg-stone-100 dark:bg-stone-900 px-6 py-3 rounded-full">
+						<Trophy className="text-stone-900 dark:text-stone-100" size={20} />
+						<span class="font-bold text-stone-900 dark:text-stone-100">Total {akademik.awardsTotal}</span>
+					</div>
+				</div>
+				
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+					{akademik.featuredAwards?.map((award) => (
+						<div class="group">
+							<div class="aspect-[4/3] rounded-3xl overflow-hidden mb-6 relative">
+								<img src={award.img} alt={award.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" />
+								<div class="absolute top-4 left-4 bg-white/90 dark:bg-stone-900/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider">
+									{award.category}
+								</div>
+							</div>
+							<p class="text-stone-500 font-bold text-sm mb-2">{award.year}</p>
+							<h3 class="text-xl font-bold text-stone-900 dark:text-stone-100 leading-tight">{award.title}</h3>
+						</div>
+					))}
+				</div>
+			</div>
+		</section>
+	</main>
+	
+	<Footer />
+</Layout>

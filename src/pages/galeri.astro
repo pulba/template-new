@@ -1,0 +1,167 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import GalleryCarousel from '../components/GalleryCarousel';
+import { getCollection, getEntry } from 'astro:content';
+import { Camera, Calendar, Maximize2, X } from 'lucide-react';
+
+const identity = await getEntry('settings', 'identity');
+const siteConfig = identity?.data || { schoolName: "Nama Sekolah" };
+
+const galleryItems = await getCollection('gallery');
+const sortedGallery = galleryItems.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const featuredItems = sortedGallery.slice(0, 5);
+---
+
+<Layout title={`Galeri Foto - ${siteConfig.schoolName}`}>
+	<Navbar />
+	
+	<main class="bg-stone-50 dark:bg-stone-950 min-h-screen transition-colors duration-300">
+		<section class="py-16 md:py-20 bg-stone-900 text-white">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+				<h1 class="text-3xl sm:text-4xl lg:text-6xl font-bold mb-6 tracking-tight">Galeri Sekolah</h1>
+				<p class="text-lg sm:text-xl text-stone-400 max-w-2xl mx-auto leading-relaxed">
+					Momen-momen berharga dan dokumentasi kegiatan siswa kami.
+				</p>
+			</div>
+		</section>
+
+		<section class="py-12">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				{sortedGallery.length > 0 && (
+					<div class="mb-24">
+						<h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-8 tracking-tight flex items-center gap-3">
+							<div class="w-2 h-8 bg-stone-900 dark:bg-stone-100 rounded-full"></div>
+							Sorotan Utama
+						</h2>
+						<GalleryCarousel client:load items={featuredItems} />
+					</div>
+				)}
+
+				<div class="flex items-center justify-between mb-12">
+					<h2 class="text-3xl font-bold text-stone-900 dark:text-stone-100 tracking-tight">Semua Foto</h2>
+					<div class="text-stone-500 dark:text-stone-400 font-medium">
+						{sortedGallery.length} Foto Tersedia
+					</div>
+				</div>
+
+				{sortedGallery.length > 0 ? (
+					<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+						{sortedGallery.map((item) => (
+							<div class="group bg-white dark:bg-stone-900 rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-stone-100 dark:border-stone-800">
+								<div class="aspect-video overflow-hidden relative">
+									<img 
+										src={item.data.image} 
+										alt={item.data.title} 
+										class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+										referrerpolicy="no-referrer"
+									/>
+									<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+										<button 
+											class="zoom-btn bg-white text-stone-900 p-4 rounded-full shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform hover:scale-110"
+											data-image={item.data.image}
+											data-title={item.data.title}
+										>
+											<Maximize2 size={24} />
+										</button>
+									</div>
+								</div>
+								<div class="p-8">
+									<div class="flex items-center gap-3 text-xs font-bold text-stone-400 uppercase tracking-widest mb-4">
+										<Calendar size={14} />
+										{item.data.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+									</div>
+									<h2 class="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2 leading-tight">
+										{item.data.title}
+									</h2>
+									{item.data.caption && (
+										<p class="text-stone-600 dark:text-stone-400 text-sm leading-relaxed">
+											{item.data.caption}
+										</p>
+									)}
+								</div>
+							</div>
+						))}
+					</div>
+				) : (
+					<div class="text-center py-32 bg-white dark:bg-stone-900 rounded-lg border-2 border-dashed border-stone-200 dark:border-stone-800">
+						<Camera size={48} className="mx-auto text-stone-300 dark:text-stone-700 mb-6" />
+						<p class="text-stone-500 dark:text-stone-400 text-lg">Belum ada foto di galeri.</p>
+					</div>
+				)}
+			</div>
+		</section>
+	</main>
+	
+	<Footer />
+
+	{/* Lightbox Modal */}
+	<div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4">
+		<button id="close-lightbox" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full">
+			<X size={40} />
+		</button>
+		
+		<div class="max-w-5xl w-full max-h-[85vh] relative flex flex-col items-center">
+			<img id="lightbox-img" src="" alt="" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl scale-95 transition-transform duration-300" />
+			<h3 id="lightbox-title" class="text-white text-xl md:text-2xl font-bold mt-6 tracking-tight text-center"></h3>
+		</div>
+	</div>
+
+	<script is:inline>
+		const lightbox = document.getElementById('lightbox');
+		const lightboxImg = document.getElementById('lightbox-img');
+		const lightboxTitle = document.getElementById('lightbox-title');
+		const closeBtn = document.getElementById('close-lightbox');
+		const zoomBtns = document.querySelectorAll('.zoom-btn');
+
+		function openLightbox(img, title) {
+			if (!lightbox || !lightboxImg || !lightboxTitle) return;
+			
+			lightboxImg.src = img;
+			lightboxTitle.textContent = title;
+			
+			lightbox.classList.remove('opacity-0', 'pointer-events-none');
+			lightbox.classList.add('opacity-100');
+			
+			setTimeout(() => {
+				lightboxImg.classList.remove('scale-95');
+				lightboxImg.classList.add('scale-100');
+			}, 10);
+			
+			document.body.style.overflow = 'hidden';
+		}
+
+		function closeLightbox() {
+			if (!lightbox || !lightboxImg) return;
+			
+			lightbox.classList.add('opacity-0', 'pointer-events-none');
+			lightbox.classList.remove('opacity-100');
+			lightboxImg.classList.add('scale-95');
+			lightboxImg.classList.remove('scale-100');
+			
+			document.body.style.overflow = '';
+		}
+
+		zoomBtns.forEach(btn => {
+			btn.addEventListener('click', (e) => {
+				e.preventDefault();
+				const img = btn.getAttribute('data-image');
+				const title = btn.getAttribute('data-title');
+				openLightbox(img, title);
+			});
+		});
+
+		closeBtn.addEventListener('click', closeLightbox);
+		
+		lightbox.addEventListener('click', (e) => {
+			if (e.target === lightbox || e.target.id === 'lightbox') {
+				closeLightbox();
+			}
+		});
+
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape') closeLightbox();
+		});
+	</script>
+</Layout>

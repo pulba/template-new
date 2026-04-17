@@ -1,0 +1,254 @@
+backend:
+  name: git-gateway
+  branch: main
+local_backend: true
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "berita"
+    label: "Berita & Artikel"
+    label_singular: "Berita"
+    folder: "src/content/berita"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    editor:
+      preview: false
+    fields:
+      - { label: "Judul", name: "title", widget: "string" }
+      - label: "Kategori"
+        name: "category"
+        widget: "select"
+        options: ["Berita", "Prestasi", "Pengumuman", "Akademik"]
+        default: "Berita"
+      - { label: "Tanggal Publikasi", name: "publishDate", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - label: "Penulis"
+        name: "author"
+        widget: "relation"
+        collection: "authors"
+        search_fields: ["name"]
+        value_field: "name"
+        display_fields: ["name"]
+      - { label: "Gambar Utama", name: "image", widget: "image", required: false }
+      - { label: "Ringkasan", name: "description", widget: "text" }
+      - { label: "Konten", name: "body", widget: "markdown" }
+
+  - name: "gallery"
+    label: "Galeri Foto"
+    label_singular: "Foto"
+    folder: "src/content/gallery"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    editor:
+      preview: false
+    fields:
+      - { label: "Judul", name: "title", widget: "string" }
+      - { label: "Gambar", name: "image", widget: "image" }
+      - { label: "Keterangan", name: "caption", widget: "string", required: false }
+      - { label: "Tanggal", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+
+  - name: "pengumuman"
+    label: "Pengumuman"
+    folder: "src/content/pengumuman"
+    create: true
+    fields:
+      - { label: "Judul", name: "title", widget: "string" }
+      - { label: "Tanggal", name: "date", widget: "datetime" }
+      - { label: "Konten", name: "body", widget: "markdown" }
+
+  - name: "guru"
+    label: "Guru & Staf"
+    folder: "src/content/guru"
+    create: true
+    fields:
+      - { label: "Nama Lengkap", name: "name", widget: "string" }
+      - { label: "Jabatan", name: "role", widget: "string", hint: "Contoh: Wali Kelas 10-A, Wakasek Kesiswaan" }
+      - { label: "Mata Pelajaran", name: "mapel", widget: "string", required: false, hint: "Kosongkan jika bukan tenaga pendidik" }
+      - label: "Kategori"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "Pimpinan", value: "pimpinan" }
+          - { label: "Guru", value: "guru" }
+          - { label: "Staf TU", value: "staf" }
+          - { label: "Kontributor", value: "kontributor" }
+        default: "guru"
+      - { label: "Foto", name: "photo", widget: "image", required: false }
+      - { label: "No. Urut Tampil", name: "order", widget: "number", default: 10, value_type: "int" }
+      - { label: "Bio Singkat", name: "bio", widget: "text", required: false }
+
+  - name: "authors"
+    label: "Penulis Berita"
+    label_singular: "Penulis"
+    folder: "src/content/authors"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Nama Lengkap", name: "name", widget: "string" }
+
+
+  - name: "settings"
+    label: "Pengaturan"
+    delete: false
+    files:
+      - name: "identity"
+        label: "Identitas Sekolah"
+        file: "src/content/settings/identity.json"
+        fields:
+          - { label: "Nama Sekolah", name: "schoolName", widget: "string" }
+          - { label: "Singkatan Nama", name: "schoolShortName", widget: "string", required: false }
+          - { label: "Deskripsi SEO", name: "description", widget: "text", required: false }
+          - { label: "Logo Sekolah", name: "logoUrl", widget: "image", required: false }
+          - { label: "Favicon (Ikon Tab)", name: "faviconUrl", widget: "image", required: false }
+          - { label: "Nomor WhatsApp", name: "whatsapp", widget: "string", required: false }
+          - { label: "Email Utama", name: "email", widget: "string", required: false }
+          - { label: "Email PPDB/Cadangan", name: "email2", widget: "string", required: false }
+          - { label: "Telepon Utama", name: "phone", widget: "string", required: false }
+          - { label: "Telepon Cadangan", name: "phone2", widget: "string", required: false }
+          - label: "Daftar Media Sosial"
+            name: "socialMedia"
+            widget: "list"
+            fields:
+              - label: "Platform"
+                name: "platform"
+                widget: "select"
+                options: ["Facebook", "Instagram", "Youtube", "Twitter", "TikTok", "LinkedIn", "Github"]
+              - { label: "Link URL", name: "url", widget: "string" }
+          - { label: "Alamat Lengkap", name: "address", widget: "text", required: false }
+          - { label: "Jam Operasional (Sen-Jum)", name: "openingHours", widget: "string", required: false }
+          - { label: "Jam Operasional (Sabtu)", name: "openingHoursSat", widget: "string", required: false }
+          - { label: "Lokasi Peta (Latitude)", name: "mapLatitude", widget: "number", value_type: "float", required: false }
+          - { label: "Lokasi Peta (Longitude)", name: "mapLongitude", widget: "number", value_type: "float", required: false }
+
+      - name: "homepage"
+        label: "Halaman Beranda"
+        file: "src/content/settings/homepage.json"
+        fields:
+          - label: "Bagian Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Moto Sekolah (Judul)", name: "heroTitle", widget: "string" }
+              - { label: "Sub-judul / Ucapan Selamat Datang", name: "heroSubtitle", widget: "text" }
+              - { label: "Gambar Latar Hero", name: "heroImage", widget: "image", required: false }
+          
+          - label: "Sambutan Kepala Sekolah"
+            name: "principal"
+            widget: "object"
+            fields:
+              - { label: "Nama Kepala Sekolah", name: "principalName", widget: "string" }
+              - { label: "Jabatan", name: "principalRole", widget: "string" }
+              - { label: "Foto", name: "principalImage", widget: "image", required: false }
+              - { label: "Pesan Sambutan", name: "principalMessage", widget: "markdown" }
+              - { label: "Kutipan (Quote)", name: "principalQuote", widget: "text", required: false }
+              - { label: "Penulis Kutipan", name: "principalQuoteAuthor", widget: "string", required: false }
+
+          - label: "Statistik Sekolah (Fakta & Angka)"
+            name: "stats"
+            widget: "list"
+            fields:
+              - { label: "Keterangan (Misal: Siswa Aktif)", name: "label", widget: "string" }
+              - { label: "Nilai (Misal: 1200+)", name: "value", widget: "string" }
+
+      - name: "osis"
+        label: "Organisasi OSIS"
+        file: "src/content/settings/osis.json"
+        fields:
+          - { label: "Nama Kabinet", name: "cabinetName", widget: "string" }
+          - { label: "Periode", name: "period", widget: "string", hint: "Contoh: 2024/2025" }
+          - label: "Daftar Pengurus"
+            name: "members"
+            widget: "list"
+            fields:
+              - { label: "Nama Lengkap", name: "name", widget: "string" }
+              - { label: "Jabatan", name: "role", widget: "string" }
+              - { label: "Foto", name: "image", widget: "image" }
+          - label: "Daftar Seksi Bidang (Sekbid)"
+            name: "departments"
+            widget: "list"
+            fields:
+              - { label: "Nama Bidang", name: "name", widget: "string", hint: "Contoh: Sekbid I - Keimanan" }
+              - { label: "Ketua Bidang", name: "head", widget: "string" }
+              - { label: "Sekretaris Bidang", name: "secretary", widget: "string" }
+              - label: "Anggota Bidang"
+                name: "staff"
+                widget: "list"
+                fields:
+                  - { label: "Nama Anggota", name: "name", widget: "string" }
+
+      - name: "profil"
+        label: "Profil Sekolah"
+        file: "src/content/settings/profil.json"
+        fields:
+          - { label: "Judul Utama Halaman", name: "headline", widget: "string" }
+          - { label: "Deskripsi Singkat", name: "description", widget: "text" }
+          - { label: "Visi", name: "vision", widget: "text" }
+          - label: "Misi"
+            name: "missions"
+            widget: "list"
+            field: { label: "Poin Misi", name: "mission", widget: "string" }
+          - { label: "Sejarah (Gunakan Shift+Enter untuk baris baru)", name: "historyBody", widget: "markdown" }
+          - { label: "Foto Sejarah 1", name: "historyImage1", widget: "image", required: false }
+          - { label: "Foto Sejarah 2", name: "historyImage2", widget: "image", required: false }
+          - label: "Fasilitas"
+            name: "facilities"
+            widget: "list"
+            fields:
+              - { label: "Nama Fasilitas", name: "name", widget: "string" }
+              - { label: "Deskripsi", name: "desc", widget: "text" }
+              - { label: "Foto", name: "img", widget: "image" }
+
+      - name: "akademik"
+        label: "Halaman Akademik"
+        file: "src/content/settings/akademik.json"
+        fields:
+          - { label: "Judul Utama Halaman", name: "headline", widget: "string" }
+          - { label: "Deskripsi", name: "description", widget: "text" }
+          - { label: "Judul Kurikulum", name: "curriculumTitle", widget: "string" }
+          - { label: "Deskripsi Kurikulum", name: "curriculumDesc", widget: "text" }
+          - { label: "Fitur Kurikulum Baru", name: "curriculumFeatures", widget: "list", field: { label: "Fitur", name: "feature", widget: "string" } }
+          - { label: "Gambar Kurikulum", name: "curriculumImage", widget: "image" }
+          - { label: "% Lulus Ujian", name: "statsGraduation", widget: "string" }
+          - { label: "% Masuk PTN", name: "statsUni", widget: "string" }
+          - { label: "Judul Ekstrakurikuler", name: "extraHeadline", widget: "string" }
+          - { label: "Deskripsi Ekstrakurikuler", name: "extraDesc", widget: "text" }
+          - label: "Kelompok Ekstrakurikuler"
+            name: "extraGroups"
+            widget: "list"
+            fields:
+              - { label: "Nama Kategori", name: "name", widget: "string" }
+              - { label: "Daftar Kegiatan", name: "items", widget: "list", field: { label: "Kegiatan", name: "item", widget: "string" } }
+          - { label: "Judul Prestasi", name: "awardsHeadline", widget: "string" }
+          - { label: "Deskripsi Prestasi", name: "awardsDesc", widget: "text" }
+          - { label: "Total Penghargaan", name: "awardsTotal", widget: "string" }
+          - label: "Prestasi Unggulan"
+            name: "featuredAwards"
+            widget: "list"
+            fields:
+              - { label: "Judul Prestasi", name: "title", widget: "string" }
+              - { label: "Kategori", name: "category", widget: "string" }
+              - { label: "Tahun", name: "year", widget: "string" }
+              - { label: "Foto", name: "img", widget: "image" }
+
+      - name: "pendaftaran"
+        label: "Halaman Pendaftaran"
+        file: "src/content/settings/pendaftaran.json"
+        fields:
+          - { label: "Judul Utama Halaman", name: "regHeadline", widget: "string" }
+          - { label: "Deskripsi", name: "regDesc", widget: "text" }
+          - { label: "Judul Bagian Alur", name: "regStepsTitle", widget: "string", default: "Alur Pendaftaran" }
+          - label: "Langkah Pendaftaran"
+            name: "regSteps"
+            widget: "list"
+            fields:
+              - { label: "Judul Langkah", name: "title", widget: "string" }
+              - { label: "Penjelasan Singkat", name: "desc", widget: "text" }
+          - { label: "Judul Bagian Syarat", name: "regRequirementsTitle", widget: "string", default: "Persyaratan Berkas" }
+          - { label: "Daftar Persyaratan", name: "regRequirements", widget: "list", field: { label: "Poin Syarat", name: "requirement", widget: "string" } }
+          - { label: "Judul Bagian Formulir", name: "regFormTitle", widget: "string", default: "Formulir Pendaftaran" }
+          - { label: "Deskripsi Bagian Formulir", name: "regFormDesc", widget: "text" }
+          - { label: "Judul Biaya (Bawah)", name: "regFeeTitle", widget: "string" }
+          - { label: "Deskripsi Biaya", name: "regFeeDesc", widget: "text" }
+          - { label: "Judul Bantuan (Bawah)", name: "regHelpTitle", widget: "string" }
+          - { label: "Deskripsi Bantuan", name: "regHelpDesc", widget: "text" }

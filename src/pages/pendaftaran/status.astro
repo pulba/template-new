@@ -1,0 +1,169 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import { Search, Loader2, CheckCircle2, Clock, XCircle, AlertCircle } from "lucide-react";
+
+---
+
+<Layout title="Cek Status Pendaftaran - Portal Sekolah">
+  <Navbar />
+  
+  <main class="bg-stone-50 dark:bg-stone-950 min-h-screen pt-32 pb-24">
+    <div class="max-w-2xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <h1 class="text-3xl font-bold text-stone-900 dark:text-stone-100 tracking-tight mb-3">Layanan Cek Status</h1>
+        <p class="text-stone-500 text-sm">Masukkan nomor pendaftaran Anda untuk memantau proses seleksi online.</p>
+      </div>
+
+      <div class="bg-white dark:bg-stone-900 p-8 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm mb-12">
+        <div class="relative group">
+          <input 
+            type="text" 
+            id="regNumberInput"
+            placeholder="Contoh: SPMB-2026-1234" 
+            class="w-full pl-12 pr-4 py-4 bg-stone-50 dark:bg-stone-950 border border-stone-100 dark:border-stone-800 rounded-xl focus:ring-1 focus:ring-stone-900 dark:focus:ring-white outline-none transition-all font-mono font-bold tracking-wider placeholder:font-sans placeholder:font-normal placeholder:tracking-normal"
+          />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-stone-900 dark:group-focus-within:text-white transition-colors" size={20} />
+          <button 
+            id="checkStatusBtn"
+            class="absolute right-2 top-2 bottom-2 px-6 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-lg text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all"
+          >
+            Cari
+          </button>
+        </div>
+      </div>
+
+      <!-- Result Container -->
+      <div id="resultContainer" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div id="loadingState" class="hidden flex flex-col items-center justify-center py-12">
+          <Loader2 className="animate-spin text-stone-400 mb-4" />
+          <p class="text-sm text-stone-500 font-medium">Sedang mencari data...</p>
+        </div>
+
+        <div id="errorState" class="hidden bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 p-6 rounded-xl text-center">
+          <AlertCircle className="mx-auto text-red-500 mb-3" />
+          <p id="errorMessage" class="text-red-600 dark:text-red-400 text-sm font-medium"></p>
+        </div>
+
+        <div id="successState" class="hidden space-y-6">
+          <div class="bg-white dark:bg-stone-900 p-8 rounded-2xl border border-stone-100 dark:border-stone-800 shadow-sm relative overflow-hidden">
+            <div id="statusIndicator" class="absolute top-0 left-0 w-1.5 h-full bg-stone-400"></div>
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1">Nama Calon Siswa</p>
+                <h3 id="studentName" class="text-xl font-bold text-stone-900 dark:text-white mb-4 md:mb-0"></h3>
+              </div>
+              
+              <div class="flex items-center gap-4 bg-stone-50 dark:bg-stone-950 px-5 py-3 rounded-xl border border-stone-100 dark:border-stone-800">
+                <div id="statusIcon" class="p-2 rounded-lg bg-white dark:bg-stone-900 shadow-sm border border-stone-100 dark:border-stone-800"></div>
+                <div>
+                  <p class="text-[9px] font-bold text-stone-400 uppercase tracking-widest mb-0.5">Status Saat Ini</p>
+                  <p id="statusValue" class="text-xs font-bold uppercase tracking-widest text-stone-900 dark:text-white"></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-8 pt-8 border-t border-stone-50 dark:border-stone-800">
+               <div class="grid grid-cols-3 gap-2">
+                  <div id="step-pending" class="h-1.5 rounded-full bg-stone-100 dark:bg-stone-800 transition-colors duration-700"></div>
+                  <div id="step-approved" class="h-1.5 rounded-full bg-stone-100 dark:bg-stone-800 transition-colors duration-700"></div>
+                  <div id="step-rejected" class="h-1.5 rounded-full bg-stone-100 dark:bg-stone-800 transition-colors duration-700"></div>
+               </div>
+               <div class="flex justify-between mt-3 text-[9px] font-bold text-stone-400 uppercase tracking-tighter">
+                  <span>Terdaftar</span>
+                  <span>Verifikasi</span>
+                  <span>Hasil Akhir</span>
+               </div>
+            </div>
+          </div>
+
+          <div class="text-center">
+             <p id="statusMessage" class="text-sm text-stone-500 leading-relaxed max-w-sm mx-auto"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+
+  <script is:inline>
+    const input = document.getElementById('regNumberInput');
+    const button = document.getElementById('checkStatusBtn');
+    const container = document.getElementById('resultContainer');
+    const loading = document.getElementById('loadingState');
+    const error = document.getElementById('errorState');
+    const success = document.getElementById('successState');
+    
+    async function checkStatus() {
+      const regId = input.value.trim();
+      if (!regId) return;
+
+      // Reset states
+      container.classList.remove('hidden');
+      loading.classList.remove('hidden');
+      error.classList.add('hidden');
+      success.classList.add('hidden');
+
+      try {
+        const response = await fetch(`/api/check-status?id=${encodeURIComponent(regId)}`);
+        const data = await response.json();
+
+        loading.classList.add('hidden');
+
+        if (!response.ok) {
+          error.classList.remove('hidden');
+          document.getElementById('errorMessage').textContent = data.message || 'Gagal mengambil data';
+          return;
+        }
+
+        success.classList.remove('hidden');
+        document.getElementById('studentName').textContent = data.name;
+        document.getElementById('statusValue').textContent = data.status;
+        
+        // UI Logic based on status
+        const indicator = document.getElementById('statusIndicator');
+        const iconContainer = document.getElementById('statusIcon');
+        const msg = document.getElementById('statusMessage');
+        const stepPending = document.getElementById('step-pending');
+        const stepApp = document.getElementById('step-approved');
+        const stepRej = document.getElementById('step-rejected');
+
+        // Reset steps
+        [stepPending, stepApp, stepRej].forEach(s => s.classList.replace('bg-green-500', 'bg-stone-100'));
+        [stepPending, stepApp, stepRej].forEach(s => s.classList.replace('bg-red-500', 'bg-stone-100'));
+
+        if (data.status === 'approved') {
+          indicator.className = "absolute top-0 left-0 w-1.5 h-full bg-green-500";
+          iconContainer.innerHTML = '<svg class="text-green-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+          msg.textContent = "Selamat! Anda dinyatakan LULUS seleksi berkas. Silakan pantau WhatsApp Anda untuk jadwal tes selanjutnya.";
+          stepPending.classList.replace('bg-stone-100', 'bg-green-500');
+          stepApp.classList.replace('bg-stone-100', 'bg-green-500');
+        } else if (data.status === 'rejected') {
+          indicator.className = "absolute top-0 left-0 w-1.5 h-full bg-red-500";
+          iconContainer.innerHTML = '<svg class="text-red-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+          msg.textContent = "Mohon maaf, Anda belum dapat melanjutkan ke tahap seleksi berikutnya pada periode ini. Teruslah bersemangat!";
+          stepPending.classList.replace('bg-stone-100', 'bg-red-500');
+          stepRej.classList.replace('bg-stone-100', 'bg-red-500');
+        } else {
+          indicator.className = "absolute top-0 left-0 w-1.5 h-full bg-amber-500";
+          iconContainer.innerHTML = '<svg class="text-amber-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+          msg.textContent = "Data Anda telah masuk. Saat ini tim panitia sedang melakukan verifikasi dokumen awal. Tunggu update selanjutnya ya!";
+          stepPending.classList.replace('bg-stone-100', 'bg-amber-500');
+        }
+
+      } catch (err) {
+        loading.classList.add('hidden');
+        error.classList.remove('hidden');
+        document.getElementById('errorMessage').textContent = "Terjadi kesalahan sistem. Silakan coba lagi.";
+      }
+    }
+
+    button.addEventListener('click', checkStatus);
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') checkStatus();
+    });
+  </script>
+</Layout>

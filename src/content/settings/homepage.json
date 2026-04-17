@@ -1,0 +1,33 @@
+{
+  "hero": {
+    "heroTitle": "Membentuk Masa Depan Cemerlang",
+    "heroSubtitle": "Selamat datang di sekolah kami. Kami berkomitmen memberikan pendidikan terbaik untuk mencetak generasi yang berkarakter dan siap menghadapi tantangan global.",
+    "heroImage": "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=1920"
+  },
+  "principal": {
+    "principalName": "Dr. Arifin Sudrajat, M.Si.",
+    "principalRole": "Kepala Sekolah",
+    "principalImage": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800",
+    "principalMessage": "Assalamu'alaikum Warahmatullahi Wabarakatuh,\n\nSelamat datang di portal informasi resmi sekolah kami. Sebagai lembaga pendidikan yang berfokus pada pengembangan potensi siswa secara holistik, kami percaya bahwa setiap anak memiliki bakat unik yang perlu diasah dengan tepat.\n\nMelalui kurikulum yang inovatif dan lingkungan belajar yang suportif, kami berupaya menciptakan pemimpin masa depan yang tidak hanya cerdas secara intelektual, tetapi juga memiliki integritas moral yang tinggi.",
+    "principalQuote": "Pendidikan adalah senjata paling mematikan di dunia, karena dengan pendidikan Anda bisa mengubah dunia.",
+    "principalQuoteAuthor": "Nelson Mandela"
+  },
+  "stats": [
+    {
+      "label": "Siswa Aktif",
+      "value": "1200+"
+    },
+    {
+      "label": "Guru & Staf",
+      "value": "85+"
+    },
+    {
+      "label": "Ekstrakurikuler",
+      "value": "20+"
+    },
+    {
+      "label": "Prestasi Nasional",
+      "value": "100+"
+    }
+  ]
+}

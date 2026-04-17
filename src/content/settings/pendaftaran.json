@@ -1,0 +1,36 @@
+{
+  "regHeadline": "Pendaftaran Siswa Baru",
+  "regDesc": "Bergabunglah dengan komunitas pembelajar kami. Proses pendaftaran mudah, transparan, dan sepenuhnya online.",
+  "regStepsTitle": "Alur Pendaftaran",
+  "regSteps": [
+    {
+      "title": "Isi Formulir Online",
+      "desc": "Lengkapi data diri calon siswa dan orang tua melalui formulir di halaman ini."
+    },
+    {
+      "title": "Verifikasi Dokumen",
+      "desc": "Tim kami akan memverifikasi data dan menghubungi Anda untuk kelengkapan berkas."
+    },
+    {
+      "title": "Tes Seleksi",
+      "desc": "Calon siswa mengikuti tes pemetaan potensi dan wawancara orang tua."
+    },
+    {
+      "title": "Daftar Ulang",
+      "desc": "Penyelesaian administrasi dan pengambilan seragam serta perlengkapan sekolah."
+    }
+  ],
+  "regRequirementsTitle": "Persyaratan Berkas",
+  "regRequirements": [
+    "Fotokopi Akta Kelahiran",
+    "Fotokopi Kartu Keluarga",
+    "Pas Foto Terbaru 3x4 (4 Lembar)",
+    "Fotokopi Rapor 2 Semester Terakhir"
+  ],
+  "regFormTitle": "Formulir Pendaftaran",
+  "regFormDesc": "Silakan isi data di bawah ini dengan benar. Pastikan nomor WhatsApp aktif.",
+  "regFeeTitle": "Biaya Pendaftaran",
+  "regFeeDesc": "Rp 250.000 (Termasuk biaya tes seleksi dan administrasi awal).",
+  "regHelpTitle": "Butuh Bantuan?",
+  "regHelpDesc": "Hubungi panitia PPDB kami jika Anda mengalami kendala selama proses pendaftaran."
+}

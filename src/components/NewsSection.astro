@@ -1,0 +1,248 @@
+---
+import { ChevronRight } from "lucide-react";
+
+interface Props {
+  title: string;
+  category?: string;
+  posts: any[];
+  layout?: "grid-hero" | "feature-list" | "cards-3col" | "horizontal-list";
+  hideViewAll?: boolean;
+}
+
+const {
+  title,
+  category,
+  posts,
+  layout = "cards-3col",
+  hideViewAll = false,
+} = Astro.props;
+---
+
+<section
+  class="pb-24 border-b border-stone-100 dark:border-stone-800 last:border-0"
+>
+  <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center gap-4">
+      <h2
+        class="text-xl font-bold text-stone-900 dark:text-white tracking-tight uppercase border-l-4 border-amber-600 pl-4"
+      >
+        {title}
+      </h2>
+    </div>
+    {
+      !hideViewAll && (
+        <a
+          href={category ? `/kategori/${category.toLowerCase()}` : "/berita"}
+          class="text-xs font-bold text-stone-400 hover:text-amber-600 transition-colors uppercase tracking-widest flex items-center gap-2"
+        >
+          Lihat Semua <ChevronRight size={14} />
+        </a>
+      )
+    }
+  </div>
+
+  {
+    posts.length > 0 ? (
+      <>
+        {layout === "grid-hero" && (
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-2 min-h-[500px]">
+            {/* Main Large Post */}
+            <div class="md:col-span-7 h-full">
+              <article class="relative h-full min-h-[400px] overflow-hidden rounded-lg group">
+                <a href={`/berita/${posts[0].id}`} class="absolute inset-0 z-0">
+                  <img
+                    src={
+                      posts[0].data.image ||
+                      `https://picsum.photos/seed/${posts[0].id}/1200/800`
+                    }
+                    alt={posts[0].data.title}
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                </a>
+                <div class="absolute top-6 left-6 z-10">
+                  <a
+                    href={`/kategori/${posts[0].data.category.toLowerCase()}`}
+                    class="bg-amber-600 text-white px-3 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest hover:bg-amber-700 transition-colors"
+                  >
+                    {posts[0].data.category}
+                  </a>
+                </div>
+                <div class="absolute bottom-0 p-8 w-full">
+                  <time class="text-[10px] text-stone-300 mb-2 block font-bold uppercase tracking-widest">
+                    {posts[0].data.publishDate.toLocaleDateString("id-ID", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </time>
+                  <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 group-hover:text-amber-400 transition-colors leading-tight">
+                    <a href={`/berita/${posts[0].id}`}>{posts[0].data.title}</a>
+                  </h3>
+                </div>
+              </article>
+            </div>
+            {/* Small Posts Grid */}
+            <div class="md:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {posts.slice(1, 5).map((post) => (
+                <article class="relative aspect-square overflow-hidden rounded-lg group">
+                  <a href={`/berita/${post.id}`} class="absolute inset-0 z-0">
+                    <img
+                      src={
+                        post.data.image ||
+                        `https://picsum.photos/seed/${post.id}/600/600`
+                      }
+                      alt={post.data.title}
+                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                  </a>
+                  <div class="absolute top-4 left-4 z-10">
+                    <a
+                      href={`/kategori/${post.data.category.toLowerCase()}`}
+                      class="bg-amber-600/80 backdrop-blur-sm text-white px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest hover:bg-amber-700 transition-colors"
+                    >
+                      {post.data.category}
+                    </a>
+                  </div>
+                  <div class="absolute bottom-0 p-4 w-full">
+                    <time class="text-[9px] text-stone-300 mb-1 block font-bold uppercase tracking-widest">
+                      {post.data.publishDate.toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </time>
+                    <h4 class="text-sm font-bold text-white leading-tight group-hover:text-amber-400 transition-colors line-clamp-2">
+                      <a href={`/berita/${post.id}`}>{post.data.title}</a>
+                    </h4>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {layout === "feature-list" && (
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <article class="group">
+              <div class="aspect-video rounded-lg overflow-hidden mb-6 relative group">
+                <a href={`/berita/${posts[0].id}`} class="block w-full h-full">
+                  <img
+                    src={posts[0].data.image}
+                    alt={posts[0].data.title}
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                </a>
+                <a
+                  href={`/kategori/${posts[0].data.category.toLowerCase()}`}
+                  class="absolute top-4 left-4 z-10"
+                >
+                  <span class="bg-amber-600 text-white px-2 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest hover:bg-amber-700 transition-colors">
+                    {posts[0].data.category}
+                  </span>
+                </a>
+                <div class="absolute bottom-4 left-4 right-4 z-10">
+                  <time class="text-[10px] text-amber-400 font-bold uppercase tracking-[0.2em] block mb-1">
+                    {posts[0].data.publishDate.toLocaleDateString("id-ID", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </time>
+                  <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-amber-400 transition-colors leading-tight">
+                    <a href={`/berita/${posts[0].id}`}>{posts[0].data.title}</a>
+                  </h3>
+                  <p class="text-stone-300 text-sm line-clamp-2 leading-relaxed opacity-90">
+                    {posts[0].data.description}
+                  </p>
+                </div>
+              </div>
+            </article>
+            <div class="space-y-6">
+              {posts.slice(1, 4).map((post) => (
+                <article class="flex gap-4 group">
+                  <a
+                    href={`/berita/${post.id}`}
+                    class="w-24 h-24 rounded-lg overflow-hidden shrink-0"
+                  >
+                    <img
+                      src={post.data.image}
+                      alt={post.data.title}
+                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </a>
+                  <div class="flex flex-col justify-center">
+                    <div class="flex items-center gap-2">
+                      <a
+                        href={`/kategori/${post.data.category.toLowerCase()}`}
+                        class="text-[10px] text-amber-600 font-bold uppercase tracking-widest hover:underline"
+                      >
+                        {post.data.category}
+                      </a>
+                      <span class="text-stone-300">•</span>
+                      <time class="text-[10px] text-stone-400 font-bold uppercase tracking-widest">
+                        {post.data.publishDate.toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </time>
+                    </div>
+                    <h4 class="text-sm font-bold text-stone-900 dark:text-white mb-1.5 leading-tight group-hover:text-amber-600 transition-colors line-clamp-2">
+                      <a href={`/berita/${post.id}`}>{post.data.title}</a>
+                    </h4>
+                    <p class="text-stone-500 dark:text-stone-400 text-[11px] line-clamp-2 leading-relaxed">
+                      {post.data.description}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {layout === "cards-3col" && (
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {posts.slice(0, 6).map((post) => (
+              <article class="group bg-white dark:bg-stone-900/50 rounded-xl border border-stone-100 dark:border-stone-800 p-4 hover:shadow-xl hover:shadow-stone-200/50 dark:hover:shadow-black/20 transition-all duration-300">
+                <a
+                  href={`/berita/${post.id}`}
+                  class="block aspect-video rounded-lg overflow-hidden mb-5 relative"
+                >
+                  <img
+                    src={post.data.image}
+                    alt={post.data.title}
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                </a>
+                <div class="flex items-center gap-3 mb-3">
+                  <a
+                    href={`/kategori/${post.data.category.toLowerCase()}`}
+                    class="text-[10px] font-bold text-amber-600 uppercase tracking-widest hover:underline"
+                  >
+                    {post.data.category}
+                  </a>
+                  <span class="w-1 h-1 bg-stone-300 rounded-full" />
+                  <time class="text-[10px] text-stone-400 font-bold uppercase tracking-widest">
+                    {post.data.publishDate.toLocaleDateString("id-ID", {
+                      day: "numeric",
+                      month: "short",
+                    })}
+                  </time>
+                </div>
+                <h3 class="text-lg font-bold text-stone-900 dark:text-white mb-2 leading-tight group-hover:text-amber-600 transition-colors">
+                  <a href={`/berita/${post.id}`}>{post.data.title}</a>
+                </h3>
+              </article>
+            ))}
+          </div>
+        )}
+      </>
+    ) : (
+      <div class="py-12 text-center text-stone-400 italic bg-stone-50 dark:bg-stone-900 rounded-lg border-2 border-dashed border-stone-200 dark:border-stone-800">
+        Belum ada konten untuk kategori ini.
+      </div>
+    )
+  }
+</section>

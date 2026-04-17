@@ -1,0 +1,108 @@
+---
+import { TrendingUp, Hash, Share2, Facebook, Twitter, Instagram, Youtube, ArrowUpRight } from 'lucide-react';
+import { getCollection } from 'astro:content';
+
+const allBerita = await getCollection('berita');
+const popularPosts = allBerita.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()).slice(0, 5);
+const categories = [...new Set(allBerita.map(n => n.data.category))].sort();
+
+interface Props {
+  showPPDB?: boolean;
+}
+
+const { showPPDB = true } = Astro.props;
+---
+
+<aside class="space-y-16">
+  {/* Social Media Link Grid */}
+  <div>
+    <h3 class="text-lg font-bold text-stone-900 dark:text-white mb-6 uppercase tracking-wider flex items-center gap-3">
+      <Share2 size={20} className="text-amber-600" /> Ikuti Kami
+    </h3>
+    <div class="grid grid-cols-2 gap-3">
+      <a href="#" class="flex items-center gap-3 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors group">
+        <Facebook size={18} fill="currentColor" stroke="none" />
+        <span class="text-xs font-bold uppercase tracking-widest">Facebook</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 p-3 bg-sky-500 hover:bg-sky-600 text-white rounded-lg transition-colors group">
+        <Twitter size={18} fill="currentColor" stroke="none" />
+        <span class="text-xs font-bold uppercase tracking-widest">Twitter</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 p-3 bg-gradient-to-tr from-yellow-400 via-rose-500 to-purple-600 text-white rounded-lg transition-transform hover:scale-[1.02]">
+        <Instagram size={18} />
+        <span class="text-xs font-bold uppercase tracking-widest">Instagram</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 p-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors group">
+        <Youtube size={18} fill="currentColor" stroke="none" />
+        <span class="text-xs font-bold uppercase tracking-widest">Youtube</span>
+      </a>
+    </div>
+  </div>
+
+  {/* Popular Posts */}
+  <div>
+    <h3 class="text-lg font-bold text-stone-900 dark:text-white mb-8 uppercase tracking-wider flex items-center gap-3">
+      <TrendingUp size={20} className="text-amber-600" /> Populer
+    </h3>
+    <div class="space-y-6">
+      {popularPosts.map((post, index) => (
+        <a href={`/berita/${post.id}`} class="flex gap-4 group">
+          <div class="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-stone-100">
+            <img src={post.data.image} alt={post.data.title} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            <div class="absolute top-0 left-0 bg-amber-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-br-lg">
+              {index + 1}
+            </div>
+          </div>
+          <div class="flex flex-col justify-center">
+            <h4 class="text-[13px] font-bold text-stone-900 dark:text-white leading-tight line-clamp-2 group-hover:text-amber-600 transition-colors">
+              {post.data.title}
+            </h4>
+            <time class="text-[9px] text-stone-400 font-bold uppercase mt-1">
+               {post.data.publishDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </time>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  {/* YouTube Video Embed Suggestion */}
+  <div class="bg-stone-950 dark:bg-stone-900 rounded-xl overflow-hidden aspect-video relative group cursor-pointer group">
+    <img src="https://picsum.photos/seed/school-video/600/340" class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000" />
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="w-14 h-14 bg-red-600 rounded-full flex items-center justify-center text-white shadow-2xl transition-transform group-hover:scale-125">
+        <Youtube size={28} fill="currentColor" stroke="none" />
+      </div>
+    </div>
+    <div class="absolute bottom-4 left-4 right-4">
+      <p class="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1">Highlights</p>
+      <h4 class="text-white text-xs font-bold leading-snug">Profil SMA 01 Indonesia: Mewujudkan Generasi Unggul</h4>
+    </div>
+  </div>
+
+  {/* Category Cloud */}
+  <div>
+    <h3 class="text-lg font-bold text-stone-900 dark:text-white mb-8 uppercase tracking-wider flex items-center gap-3">
+      <Hash size={20} className="text-amber-600" /> Kategori
+    </h3>
+    <div class="flex flex-wrap gap-2">
+      {categories.map((cat) => (
+        <a href={`/kategori/${cat.toLowerCase()}`} class="px-3 py-1.5 bg-stone-50 hover:bg-amber-600 dark:bg-stone-900 dark:hover:bg-amber-600 text-stone-600 dark:text-stone-400 hover:text-white dark:hover:text-white rounded-md text-[11px] font-bold uppercase tracking-widest transition-colors border border-stone-100 dark:border-stone-800">
+          {cat}
+        </a>
+      ))}
+    </div>
+  </div>
+
+  {/* PPDB CTA Banner */}
+  {showPPDB && (
+    <div class="bg-stone-900 dark:bg-stone-100 p-8 rounded-xl relative overflow-hidden group shadow-2xl">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-amber-600/20 rounded-full -mr-16 -mt-16 blur-3xl transition-transform group-hover:scale-150"></div>
+      <p class="text-[10px] font-bold text-amber-500 uppercase tracking-[0.2em] mb-4">Informasi PPDB</p>
+      <h4 class="text-xl font-bold text-white dark:text-stone-900 mb-6 leading-tight italic">Masa Depan Cerah Dimulai dari Sini.</h4>
+      <a href="/pendaftaran" class="inline-flex items-center gap-2 bg-white dark:bg-stone-900 text-stone-900 dark:text-white px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-widest hover:gap-3 transition-all hover:bg-stone-100 dark:hover:bg-stone-800 shadow-xl">
+        Daftar Sekarang <ArrowUpRight size={14} />
+      </a>
+    </div>
+  )}
+</aside>

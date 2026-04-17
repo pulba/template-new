@@ -1,0 +1,200 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import SPMBForm from "../components/SPMBForm";
+import {
+  FileText,
+  ClipboardCheck,
+  CreditCard,
+  HelpCircle,
+  Phone,
+  MessageCircle,
+} from "lucide-react";
+import { getEntry } from "astro:content";
+
+const identityEntry = await getEntry("settings", "identity");
+const siteConfig = identityEntry?.data || {
+  schoolName: "Nama Sekolah",
+  whatsapp: "62812345678",
+  phone: "(021) 1234-5678",
+};
+
+const pendaftaranEntry = await getEntry("settings", "pendaftaran");
+const pendaftaran = pendaftaranEntry?.data || {
+  regHeadline: "Pendaftaran Siswa Baru",
+  regDesc:
+    "Bergabunglah dengan komunitas pembelajar kami. Proses pendaftaran mudah, transparan, dan sepenuhnya online.",
+  regStepsTitle: "Alur Pendaftaran",
+  regSteps: [],
+  regRequirementsTitle: "Persyaratan Berkas",
+  regRequirements: [],
+  regFormTitle: "Formulir Pendaftaran",
+  regFormDesc: "Silakan isi data di bawah ini dengan benar.",
+  regFeeTitle: "Biaya Pendaftaran",
+  regFeeDesc: "Informasi biaya pendaftaran.",
+  regHelpTitle: "Butuh Bantuan?",
+  regHelpDesc: "Hubungi panitia PPDB kami.",
+};
+---
+
+<Layout title={`${pendaftaran.regHeadline} - ${siteConfig.schoolName}`}>
+  <Navbar />
+
+  <main class="bg-white dark:bg-stone-950 transition-colors duration-300">
+    <!-- Header -->
+    <section class="py-20 md:py-28 bg-stone-900 text-white relative">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10"
+      >
+        <h1
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 tracking-tight"
+        >
+          {pendaftaran.regHeadline}
+        </h1>
+        <p
+          class="text-base sm:text-lg text-stone-400 max-w-2xl mx-auto leading-relaxed font-medium"
+        >
+          {pendaftaran.regDesc}
+        </p>
+      </div>
+    </section>
+
+    <section class="py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:grid lg:grid-cols-12 gap-16 lg:gap-20">
+          <!-- 1. ALUR (Top on mobile, sidebar on desktop) -->
+          <div class="lg:col-span-4 lg:order-1 order-1">
+            <div>
+              <h2
+                class="text-lg font-bold text-stone-900 dark:text-stone-100 mb-10 flex items-center gap-3 uppercase tracking-widest border-b border-stone-100 dark:border-stone-800 pb-4"
+              >
+                {pendaftaran.regStepsTitle}
+              </h2>
+              <div
+                class="space-y-10 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-stone-100 dark:before:bg-stone-800"
+              >
+                {
+                  pendaftaran.regSteps?.map((step, index) => (
+                    <div class="relative pl-10">
+                      <div
+                        class={`absolute left-0 top-0 w-6 h-6 bg-white dark:bg-stone-900 border ${index === 0 ? "border-stone-900 dark:border-stone-100" : "border-stone-200 dark:border-stone-800"} rounded-full flex items-center justify-center z-10 font-bold text-[10px]`}
+                      >
+                        {index + 1}
+                      </div>
+                      <h3 class="font-bold text-stone-900 dark:text-stone-100 mb-1 text-sm uppercase tracking-wide">
+                        {step.title}
+                      </h3>
+                      <p class="text-stone-500 dark:text-stone-400 text-xs leading-relaxed">
+                        {step.desc}
+                      </p>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. FORM SECTION (Middle on mobile, main col on desktop) -->
+          <div class="lg:col-span-8 lg:row-span-2 lg:order-2 order-2">
+            <div
+              class="mb-12 pb-6 border-b border-stone-100 dark:border-stone-800"
+            >
+              <h2
+                class="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2 tracking-tight"
+              >
+                {pendaftaran.regFormTitle}
+              </h2>
+              <p class="text-sm text-stone-500 dark:text-stone-400 font-medium">
+                {pendaftaran.regFormDesc}
+              </p>
+            </div>
+
+            <div class="bg-white dark:bg-stone-900 lg:px-4">
+              <SPMBForm
+                client:load
+                whatsapp={siteConfig.whatsapp}
+                schoolName={siteConfig.schoolName}
+              />
+            </div>
+          </div>
+
+          <!-- 3. SYARAT & BANTUAN (Bottom on mobile, sidebar bottom on desktop) -->
+          <div class="lg:col-span-4 lg:order-3 order-3 space-y-8">
+            <div
+              class="bg-stone-50 dark:bg-stone-900/50 p-8 rounded-xl border border-stone-100 dark:border-stone-800"
+            >
+              <h2
+                class="text-sm font-bold text-stone-900 dark:text-white mb-6 flex items-center gap-3 uppercase tracking-widest"
+              >
+                <FileText size={18} className="text-stone-400" />
+                {pendaftaran.regRequirementsTitle}
+              </h2>
+              <ul class="space-y-4">
+                {
+                  pendaftaran.regRequirements?.map((item) => (
+                    <li class="flex items-start gap-3 text-stone-600 dark:text-stone-400">
+                      <div class="w-1.5 h-1.5 rounded-full bg-stone-300 dark:bg-stone-600 mt-1.5 shrink-0" />
+                      <span class="text-sm leading-snug">{item}</span>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+
+            <div class="space-y-4">
+              <div
+                class="flex items-start gap-4 p-6 bg-white dark:bg-stone-900 rounded-xl border border-stone-100 dark:border-stone-800"
+              >
+                <CreditCard size={20} className="text-stone-400 shrink-0" />
+                <div>
+                  <h4
+                    class="text-sm font-bold text-stone-900 dark:text-stone-100 mb-1 uppercase tracking-wider"
+                  >
+                    {pendaftaran.regFeeTitle}
+                  </h4>
+                  <p
+                    class="text-stone-500 dark:text-stone-400 text-xs leading-relaxed"
+                  >
+                    {pendaftaran.regFeeDesc}
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="flex items-start gap-4 p-6 bg-stone-900 text-white rounded-xl shadow-lg"
+              >
+                <HelpCircle size={20} className="text-stone-500 shrink-0" />
+                <div>
+                  <h4
+                    class="text-sm font-bold text-white mb-1 uppercase tracking-wider"
+                  >
+                    {pendaftaran.regHelpTitle}
+                  </h4>
+                  <p class="text-stone-400 text-[11px] mb-4 leading-relaxed">
+                    {pendaftaran.regHelpDesc}
+                  </p>
+                  <div class="flex gap-2">
+                    <a
+                      href={`tel:${siteConfig.phone.replace(/\D/g, "")}`}
+                      class="text-[10px] font-bold border border-white/20 hover:bg-white/10 px-3 py-1.5 rounded transition-all uppercase tracking-tighter"
+                      >Telepon</a
+                    >
+                    <a
+                      href={`https://wa.me/${siteConfig.whatsapp}`}
+                      target="_blank"
+                      class="text-[10px] font-bold bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded transition-all uppercase tracking-tighter"
+                      >WhatsApp</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

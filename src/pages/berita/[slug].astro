@@ -1,0 +1,331 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import { Calendar, ArrowLeft, Share2, Facebook, Twitter, Link as LinkIcon, MessageCircle, ChevronRight, TrendingUp, Hash, List, ArrowUpRight } from 'lucide-react';
+import { render } from 'astro:content';
+import { getEntry } from 'astro:content';
+
+const identity = await getEntry('settings', 'identity');
+const siteConfig = identity?.data || { schoolName: "Nama Sekolah" };
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const beritaEntries = await getCollection('berita');
+  return beritaEntries.map(entry => ({
+    params: { slug: entry.id }, props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'berita'>;
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+
+// Fetch Sidebar and Related Content
+const allNews = await getCollection('berita');
+const sortedAllNews = allNews.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+
+// Latest 5 posts for sidebar
+const popularPosts = sortedAllNews.slice(0, 5);
+
+// Related posts (same category, excluding current)
+const relatedPosts = allNews
+  .filter(item => item.id !== entry.id && item.data.category === entry.data.category)
+  .slice(0, 4);
+
+// If not enough related, fill with latest
+const finalRelatedPosts = relatedPosts.length < 4 
+  ? [...relatedPosts, ...sortedAllNews.filter(n => !relatedPosts.find(r => r.id === n.id) && n.id !== entry.id)].slice(0, 4)
+  : relatedPosts;
+
+// Categories for sidebar
+const categories = [...new Set(allNews.map(n => n.data.category))];
+
+// Table of Contents Headings (H2 & H3)
+const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": entry.data.title,
+  "image": [
+    entry.data.image || `https://picsum.photos/seed/${entry.id}/1200/675`
+  ],
+  "datePublished": entry.data.publishDate.toISOString(),
+  "dateModified": entry.data.publishDate.toISOString(),
+  "author": [{
+    "@type": "Person",
+    "name": entry.data.author
+  }],
+  "publisher": {
+    "@type": "EducationalOrganization",
+    "name": siteConfig.schoolName,
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://example.com/logo.png"
+    }
+  }
+};
+---
+
+<Layout 
+	title={entry.data.title} 
+	description={entry.data.description} 
+	image={entry.data.image} 
+	article={true}
+>
+	<script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+	
+	<Navbar />
+	
+	<main class="bg-white dark:bg-stone-950 min-h-screen pb-24 transition-colors duration-300">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+			
+			<!-- Breadcrumbs -->
+			<nav class="flex items-center gap-2 text-sm font-medium mb-8 overflow-x-auto whitespace-nowrap pb-2 scrollbar-none">
+				<a href="/" class="text-amber-600 hover:underline">Home</a>
+				<ChevronRight size={14} className="text-stone-300" />
+				<a href="/berita" class="text-stone-400 hover:text-stone-600">Berita</a>
+				<ChevronRight size={14} className="text-stone-300" />
+				<span class="text-amber-600 font-bold">{entry.data.category}</span>
+			</nav>
+
+			<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+				
+				<!-- Main Content Area -->
+				<div class="lg:col-span-8">
+					<article>
+						<header class="mb-12">
+							<h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-stone-900 dark:text-white mb-8 leading-tight tracking-tight">
+								{entry.data.title}
+							</h1>
+							
+							<div class="flex flex-col gap-6">
+								<div class="flex flex-wrap items-center gap-6 text-sm text-stone-400 font-medium">
+									<div class="flex items-center gap-2">
+										<div class="w-5 h-5 flex items-center justify-center">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+										</div>
+										<span>{entry.data.author}</span>
+									</div>
+									<div class="flex items-center gap-2">
+										<div class="w-5 h-5 flex items-center justify-center">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+										</div>
+										<time>{entry.data.publishDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</time>
+									</div>
+								</div>
+								
+								<div class="flex flex-wrap items-center gap-2 sm:gap-3">
+									<a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.url.toString())}`} target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#3b5998] text-white hover:opacity-90 transition-opacity">
+										<Facebook size={18} fill="currentColor" stroke="none" />
+									</a>
+									<a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(Astro.url.toString())}&text=${encodeURIComponent(entry.data.title)}`} target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#1da1f2] text-white hover:opacity-90 transition-opacity">
+										<Twitter size={18} fill="currentColor" stroke="none" />
+									</a>
+									<a href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(Astro.url.toString())}&description=${encodeURIComponent(entry.data.title)}`} target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#bd081c] text-white hover:opacity-90 transition-opacity">
+										<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.966 1.406-5.966s-.359-.72-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.261 7.929-7.261 4.162 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.039-1.002 2.342-1.492 3.146 1.124.347 2.317.535 3.554.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+									</a>
+									<a href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(Astro.url.toString())}`} target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#0077b5] text-white hover:opacity-90 transition-opacity">
+										<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+									</a>
+									<a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(entry.data.title + " " + Astro.url.toString())}`} target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#25d366] text-white hover:opacity-90 transition-opacity">
+										<svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+											<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+										</svg>
+									</a>
+									<a href={`https://t.me/share/url?url=${encodeURIComponent(Astro.url.toString())}&text=${encodeURIComponent(entry.data.title)}`} target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#0088cc] text-white hover:opacity-90 transition-opacity">
+										<svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+											<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.98-.65-.35-1 .22-1.58.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.15-.03-.21-.02-.09.02-1.56.99-4.39 2.9-.41.28-.79.42-1.13.41-.38-.01-1.11-.21-1.65-.39-.66-.22-1.18-.33-1.13-.7.03-.19.28-.39.77-.6 3.03-1.32 5.05-2.18 6.06-2.58 2.89-1.13 3.49-1.33 3.84-1.33.08 0 .26.02.38.12.1.09.13.21.14.3 0 .09.01.27 0 .42z"/>
+										</svg>
+									</a>
+								</div>
+							</div>
+						</header>
+
+						<!-- Featured Image -->
+						<div class="aspect-video rounded-lg overflow-hidden shadow-2xl mb-12">
+							<img 
+								src={entry.data.image || `https://picsum.photos/seed/${entry.id}/1200/675`} 
+								alt={entry.data.title} 
+								class="w-full h-full object-cover"
+								referrerpolicy="no-referrer"
+							/>
+						</div>
+
+						{/* Table of Contents */}
+						{toc.length > 0 && (
+							<details class="group bg-stone-50 dark:bg-stone-900/50 rounded-lg border border-stone-100 dark:border-stone-800 mb-12" open={false}>
+								<summary class="flex items-center justify-between gap-3 p-8 cursor-pointer list-none">
+									<div class="flex items-center gap-3">
+										<List size={20} className="text-stone-400" />
+										<h3 class="text-sm font-bold text-stone-900 dark:text-white uppercase tracking-widest">Daftar Isi</h3>
+									</div>
+									<ChevronRight size={18} className="text-stone-400 group-open:rotate-90 transition-transform" />
+								</summary>
+								<div class="px-8 pb-8">
+									<ul class="space-y-3">
+										{toc.map((heading) => (
+											<li class={`${heading.depth === 3 ? 'ml-6' : ''}`}>
+												<a href={`#${heading.slug}`} class="text-sm font-medium text-stone-600 dark:text-stone-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-2 group transition-colors">
+													<ChevronRight size={14} className="text-stone-300 group-hover:text-indigo-400 transition-colors" />
+													{heading.text}
+												</a>
+											</li>
+										))}
+									</ul>
+								</div>
+							</details>
+						)}
+
+						<!-- Article Body -->
+						<div id="article-content" class="prose prose-stone dark:prose-invert prose-base sm:prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-relaxed prose-img:rounded-lg prose-a:text-stone-900 dark:prose-a:text-white prose-a:font-bold prose-a:underline-offset-4">
+							<Content />
+
+							<!-- Middle Suggestion Card (Hidden by default, moved by script) -->
+							{finalRelatedPosts.length > 0 && (
+								<div id="middle-suggestion" class="not-prose my-12 border border-stone-200 dark:border-stone-800 p-6 rounded-sm bg-white dark:bg-transparent hidden">
+									<p class="text-xs text-stone-400 mb-4 italic">You may also like...</p>
+									<ul class="space-y-3 list-disc list-inside">
+										{finalRelatedPosts.slice(0, 3).map((post) => (
+											<li class="text-amber-600 dark:text-amber-500 marker:text-stone-300">
+												<a href={`/berita/${post.id}`} class="text-sm font-bold hover:underline underline-offset-4 decoration-2">
+													{post.data.title}
+												</a>
+											</li>
+										))}
+									</ul>
+								</div>
+							)}
+						</div>
+
+						<script is:inline>
+							function moveSuggestion() {
+								const content = document.getElementById('article-content');
+								const suggestion = document.getElementById('middle-suggestion');
+								if (!content || !suggestion) return;
+
+								const paragraphs = content.querySelectorAll('p');
+								if (paragraphs.length >= 4) {
+									// Insert after the second or third paragraph
+									const index = Math.floor(paragraphs.length / 2);
+									paragraphs[index].after(suggestion);
+									suggestion.classList.remove('hidden');
+								} else if (paragraphs.length > 0) {
+									// Just put it at the end if too short
+									content.appendChild(suggestion);
+									suggestion.classList.remove('hidden');
+								}
+							}
+							
+							// Run on load and after Astro swaps
+							moveSuggestion();
+							document.addEventListener('astro:after-swap', moveSuggestion);
+						</script>
+
+						<!-- Related Posts -->
+						<div class="mt-24">
+							<div class="flex items-center gap-4 mb-10">
+								<h2 class="text-2xl font-bold text-stone-900 dark:text-white tracking-tight">Mungkin Anda Suka</h2>
+								<div class="h-[2px] flex-grow bg-stone-100 dark:bg-stone-800"></div>
+							</div>
+							
+							<div class="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-10">
+								{finalRelatedPosts.map((news) => (
+									<article class="group relative">
+										<a href={`/berita/${news.id}`} class="block aspect-video rounded-lg overflow-hidden mb-5 relative group">
+											<img 
+												src={news.data.image || `https://picsum.photos/seed/${news.id}/800/450`} 
+												alt={news.data.title} 
+												class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+											/>
+											<div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+										</a>
+										<a href={`/kategori/${news.data.category.toLowerCase()}`} class="text-[10px] font-bold text-stone-400 uppercase tracking-[0.2em] mb-3 block hover:text-amber-600 transition-colors">
+											{news.data.category}
+										</a>
+										<h4 class="text-lg font-bold text-stone-900 dark:text-white mb-2 leading-tight group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+											<a href={`/berita/${news.id}`}>{news.data.title}</a>
+										</h4>
+										<time class="text-[10px] text-stone-500 font-bold uppercase tracking-tighter tabular-nums">
+											{news.data.publishDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+										</time>
+									</article>
+								))}
+							</div>
+						</div>
+					</article>
+				</div>
+
+				<!-- Sidebar Area -->
+				<aside class="lg:col-span-4 space-y-16 lg:sticky lg:top-24 h-fit">
+					
+					<!-- Popular Posts -->
+					<div>
+						<div class="flex items-center gap-3 mb-8">
+							<TrendingUp size={20} className="text-stone-400" />
+							<h3 class="text-lg font-bold text-stone-900 dark:text-white tracking-tight uppercase">Populer</h3>
+						</div>
+						
+						<div class="space-y-8">
+							{popularPosts.map((post) => (
+								<a href={`/berita/${post.id}`} class="flex items-start gap-4 group">
+									<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-stone-100">
+										<img 
+											src={post.data.image || `https://picsum.photos/seed/${post.id}/200/200`} 
+											alt={post.data.title}
+											class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+										/>
+									</div>
+									<div>
+										<h4 class="text-sm font-bold text-stone-900 dark:text-white leading-tight mb-2 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-colors line-clamp-2">
+											{post.data.title}
+										</h4>
+										<time class="text-[10px] text-stone-400 font-bold uppercase tracking-tighter tabular-nums">
+											{post.data.publishDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+										</time>
+									</div>
+								</a>
+							))}
+						</div>
+					</div>
+
+					<!-- Categories -->
+					<div>
+						<div class="flex items-center gap-3 mb-8">
+							<Hash size={20} className="text-stone-400" />
+							<h3 class="text-lg font-bold text-stone-900 dark:text-white tracking-tight uppercase">Kategori</h3>
+						</div>
+						
+						<div class="flex flex-wrap gap-2">
+							{categories.map((cat) => (
+								<a href={`/kategori/${cat.toLowerCase()}`} class="px-4 py-2 border border-stone-100 dark:border-stone-800 rounded-lg text-xs font-bold text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-900 transition-colors">
+									{cat}
+								</a>
+							))}
+						</div>
+					</div>
+
+					<!-- School Info / Ad Space -->
+					<div class="bg-stone-900 dark:bg-stone-100 p-8 rounded-lg relative overflow-hidden">
+						<div class="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -mr-12 -mt-12 blur-2xl"></div>
+						<p class="text-[10px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em] mb-4">Informasi PPDB</p>
+						<h4 class="text-xl font-bold text-white dark:text-stone-900 mb-6 leading-tight italic">Ingin bergabung dengan kami?</h4>
+						<a href="/pendaftaran" class="inline-block bg-white dark:bg-stone-900 text-stone-900 dark:text-white px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-widest hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors">
+							Daftar Sekarang
+						</a>
+					</div>
+				</aside>
+
+			</div>
+		</div>
+	</main>
+	
+	<Footer />
+</Layout>
+

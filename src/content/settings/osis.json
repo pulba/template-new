@@ -1,0 +1,73 @@
+{
+  "cabinetName": "Kabinet Sinergi",
+  "period": "2024/2025",
+  "members": [
+    {
+      "name": "Budi Santoso",
+      "role": "Ketua OSIS",
+      "image": "https://images.unsplash.com/photo-1519085185758-61992950ee5e?q=80&w=2000&auto=format&fit=crop"
+    },
+    {
+      "name": "Siti Aminah",
+      "role": "Wakil Ketua OSIS",
+      "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2000&auto=format&fit=crop"
+    },
+    {
+      "name": "Andi Wijaya",
+      "role": "Sekretaris",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2000&auto=format&fit=crop"
+    },
+    {
+      "name": "Lani Safitri",
+      "role": "Bendahara",
+      "image": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=2000&auto=format&fit=crop"
+    }
+  ],
+  "departments": [
+    {
+      "name": "Sekbid I - Pembinaan Keimanan & Ketaqwaan",
+      "head": "Ahmad Fauzi",
+      "secretary": "Hana Pertiwi",
+      "staff": [
+        {
+          "name": "Dewi Sartika"
+        },
+        {
+          "name": "Bambang Pamungkas"
+        },
+        {
+          "name": "Siska Putri"
+        }
+      ]
+    },
+    {
+      "name": "Sekbid II - Pembinaan Budi Pekerti Luhur",
+      "head": "Dimas Setiawan",
+      "secretary": "Maya Indah",
+      "staff": [
+        {
+          "name": "Joko Susilo"
+        },
+        {
+          "name": "Rina Nose"
+        }
+      ]
+    },
+    {
+      "name": "Sekbid III - Pembinaan Kepribadian & Bela Negara",
+      "head": "Eko Prasetyo",
+      "secretary": "Tiara Ramadhani",
+      "staff": [
+        {
+          "name": "Guntur Wijaya"
+        },
+        {
+          "name": "Mega Utami"
+        },
+        {
+          "name": "Anton Syahputra"
+        }
+      ]
+    }
+  ]
+}

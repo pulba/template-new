@@ -1,0 +1,36 @@
+{
+  "headline": "Membangun Karakter, Mencetak Pemimpin.",
+  "description": "Berdiri sejak tahun 1995, sekolah kami telah menjadi rumah bagi ribuan siswa untuk tumbuh dan berkembang menjadi pribadi yang unggul.",
+  "vision": "Menjadi lembaga pendidikan terkemuka yang menghasilkan lulusan berakhlak mulia, cerdas, kreatif, dan kompetitif di tingkat internasional.",
+  "missions": [
+    "Menyelenggarakan pendidikan yang mengintegrasikan nilai-nilai spiritual dan intelektual.",
+    "Mengembangkan kurikulum yang adaptif terhadap perkembangan teknologi dan kebutuhan global.",
+    "Menciptakan lingkungan belajar yang kondusif, aman, dan menyenangkan bagi seluruh warga sekolah.",
+    "Membangun kemitraan yang kuat dengan orang tua, masyarakat, dan institusi pendidikan lainnya."
+  ],
+  "historyBody": "Sekolah didirikan pada tanggal 17 Juli 1995 oleh Yayasan Pendidikan Bangsa. Berawal dari sebuah gedung kecil dengan hanya 50 siswa, kini kami telah berkembang pesat menjadi salah satu sekolah favorit di kota ini.\n\nSelama lebih dari dua dekade, kami terus melakukan inovasi dalam metode pembelajaran dan pengembangan fasilitas. Banyak lulusan kami yang kini telah sukses berkarier di berbagai bidang, baik di dalam maupun luar negeri.\n\nKomitmen kami terhadap kualitas pendidikan tidak pernah luntur. Kami terus berupaya memberikan yang terbaik bagi setiap siswa yang mempercayakan masa depannya kepada kami.",
+  "historyImage1": "/images/uploads/sejarah-1.png",
+  "historyImage2": "/images/uploads/sejarah-2.png",
+  "facilities": [
+    {
+      "name": "Ruang Kelas Digital",
+      "desc": "Dilengkapi dengan Smart TV, AC, dan koneksi internet cepat.",
+      "img": "/images/uploads/fasilitas-kelas.png"
+    },
+    {
+      "name": "Laboratorium Sains",
+      "desc": "Fasilitas lengkap untuk praktikum Fisika, Kimia, dan Biologi.",
+      "img": "/images/uploads/fasilitas-lab.png"
+    },
+    {
+      "name": "Perpustakaan",
+      "desc": "Koleksi buku fisik dan digital yang luas untuk literasi siswa.",
+      "img": "/images/uploads/fasilitas-perpus.png"
+    },
+    {
+      "name": "Sarana Olahraga",
+      "desc": "Lapangan basket, futsal, dan area panahan yang representatif.",
+      "img": "/images/uploads/fasilitas-olahraga.png"
+    }
+  ]
+}

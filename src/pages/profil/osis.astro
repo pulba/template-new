@@ -1,0 +1,135 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import { getEntry } from 'astro:content';
+
+const osisEntry = await getEntry('settings', 'osis');
+const osis = osisEntry?.data || { cabinetName: "OSIS", period: "2024/2025", members: [] };
+
+// Members
+const members = osis.members || [];
+---
+
+<Layout title={`Struktur Organisasi OSIS - ${osis.cabinetName}`}>
+	<Navbar />
+
+	<main class="pt-20">
+		{/* Hero Header */}
+		<section class="relative py-24 bg-stone-900 overflow-hidden">
+			<div class="absolute inset-0 bg-gradient-to-br from-amber-600/20 to-transparent"></div>
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+				<div class="inline-block px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-500 font-bold text-sm mb-6">
+					Profil Kesiswaan
+				</div>
+				<h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+					Struktur Organisasi <span class="text-amber-500">OSIS</span>
+				</h1>
+				<p class="text-xl text-stone-400 max-w-2xl mx-auto">
+					Kepengurusan {osis.cabinetName} Periode {osis.period}. Sinergi dalam dedikasi, bergerak untuk prestasi.
+				</p>
+			</div>
+		</section>
+
+		{/* Core Members Grid */}
+		<section class="py-24 bg-white dark:bg-stone-950">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="flex items-center gap-4 mb-12">
+					<div class="w-12 h-1 bg-amber-500 rounded-full" />
+					<h2 class="text-3xl font-bold text-stone-900 dark:text-stone-100 uppercase tracking-tight">
+						BPH (Badan Pengurus Harian)
+					</h2>
+				</div>
+				
+				{members.length > 0 ? (
+					<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-32">
+						{members.map((member, index) => (
+							<div class="group">
+								<div class="relative mb-6">
+									<div class="aspect-[3/4] rounded-3xl overflow-hidden shadow-xl">
+										<img
+											src={member.image}
+											alt={member.name}
+											class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+										/>
+									</div>
+									<div class="absolute -top-4 -left-4 w-12 h-12 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold shadow-lg">
+										{index + 1}
+									</div>
+								</div>
+								
+								<div>
+									<h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2 truncate">
+										{member.name}
+									</h2>
+									<div class="flex items-center gap-3">
+										<div class="w-8 h-[2px] bg-amber-500"></div>
+										<p class="text-amber-600 dark:text-amber-400 font-bold uppercase tracking-widest text-xs">
+											{member.role}
+										</p>
+									</div>
+								</div>
+							</div>
+						))}
+					</div>
+				) : (
+					<div class="text-center py-20 bg-stone-50 dark:bg-stone-900 rounded-3xl border-2 border-dashed border-stone-200 dark:border-stone-800 mb-32">
+						<p class="text-stone-500">Data kepengurusan belum tersedia.</p>
+					</div>
+				)}
+
+				{/* Seksi Bidang Section */}
+				<div class="flex items-center gap-4 mb-12">
+					<div class="w-12 h-1 bg-amber-500 rounded-full" />
+					<h2 class="text-3xl font-bold text-stone-900 dark:text-stone-100 uppercase tracking-tight">
+						Seksi Bidang (Sekbid)
+					</h2>
+				</div>
+
+				{osis.departments && osis.departments.length > 0 ? (
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+						{osis.departments.map((dept) => (
+							<div class="bg-stone-50 dark:bg-stone-900/50 p-10 rounded-[2.5rem] border border-stone-100 dark:border-stone-800 shadow-sm hover:shadow-xl transition-all duration-500 group">
+								<h3 class="text-xl font-bold text-stone-900 dark:text-stone-100 mb-8 pb-4 border-b border-stone-200 dark:border-stone-800 group-hover:text-amber-600 transition-colors leading-tight">
+									{dept.name}
+								</h3>
+								
+								<div class="space-y-6">
+									<div>
+										<p class="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400 dark:text-stone-500 mb-2">Ketua Bidang</p>
+										<p class="text-lg font-bold text-stone-800 dark:text-stone-200">{dept.head}</p>
+									</div>
+									
+									<div>
+										<p class="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400 dark:text-stone-500 mb-2">Sekretaris Bidang</p>
+										<p class="text-lg font-bold text-stone-800 dark:text-stone-200">{dept.secretary}</p>
+									</div>
+									
+									{dept.staff && dept.staff.length > 0 && (
+										<div>
+											<p class="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400 dark:text-stone-500 mb-3">Anggota Bidang</p>
+											<ul class="space-y-2">
+												{dept.staff.map((s) => (
+													<li class="flex items-center gap-3 text-stone-600 dark:text-stone-400">
+														<div class="w-1.5 h-1.5 bg-amber-500 rounded-full shrink-0" />
+														<span class="font-medium">{s.name}</span>
+													</li>
+												))}
+											</ul>
+										</div>
+									)}
+								</div>
+							</div>
+						))}
+					</div>
+				) : (
+					<div class="text-center py-20 bg-stone-50 dark:bg-stone-900 rounded-3xl border-2 border-dashed border-stone-200 dark:border-stone-800">
+						<p class="text-stone-500">Data seksi bidang belum tersedia.</p>
+					</div>
+				)}
+			</div>
+		</section>
+	</main>
+
+	<Footer />
+</Layout>

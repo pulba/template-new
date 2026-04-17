@@ -1,0 +1,783 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import OsisSection from "../components/OsisSection.astro";
+import TeacherSlider from "../components/TeacherSlider.astro";
+import { ArrowRight, Award, Users, BookOpen } from "lucide-react";
+import { getCollection, getEntry } from "astro:content";
+
+const identity = await getEntry("settings", "identity");
+const siteConfig = identity?.data || { schoolName: "Nama Sekolah" };
+
+const homeEntry = await getEntry("settings", "homepage");
+const homeData = homeEntry?.data;
+// Check if data is indeed the homepage schema part of the union
+const homepage =
+	homeData && "hero" in homeData
+		? homeData
+		: {
+				hero: {
+					heroTitle: "Membentuk Masa Depan Cemerlang",
+					heroSubtitle: `Selamat datang di ${siteConfig.schoolName}. Kami berkomitmen memberikan pendidikan terbaik untuk mencetak generasi yang berkarakter dan siap menghadapi tantangan global.`,
+					heroImage: "https://picsum.photos/seed/school/1920/1080",
+				},
+				principal: {
+					principalName: "Dr. Budi Santoso, S.Pd., M.Pd.",
+					principalRole: "Kepala Sekolah",
+					principalImage:
+						"https://picsum.photos/seed/headmaster/800/1000",
+					principalMessage:
+						"Assalamu'alaikum Warahmatullahi Wabarakatuh,\n\nSelamat datang di portal informasi resmi sekolah kami. Sebagai lembaga pendidikan yang berfokus pada pengembangan potensi siswa secara holistik, kami percaya bahwa setiap anak memiliki bakat unik yang perlu diasah dengan tepat.\n\nMelalui kurikulum yang inovatif dan lingkungan belajar yang suportif, kami berupaya menciptakan pemimpin masa depan yang tidak hanya cerdas secara intelektual, tetapi juga memiliki integritas moral yang tinggi.",
+					principalQuote:
+						"Pendidikan adalah senjata paling mematikan di dunia, karena dengan pendidikan Anda bisa mengubah dunia.",
+					principalQuoteAuthor: "Nelson Mandela",
+				},
+			};
+
+const latestNews = await getCollection("berita");
+const sortedNews = latestNews.sort(
+	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
+);
+const featuredNews = sortedNews.slice(0, 5);
+const latestAnnouncements = sortedNews
+	.filter((news) => news.data.category === "Pengumuman")
+	.slice(0, 3);
+
+const galleryItems = await getCollection("gallery");
+const featuredGallery = galleryItems
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+	.slice(0, 8);
+---
+
+<Layout title="Beranda">
+	<Navbar />
+
+	<main class="bg-white dark:bg-stone-950 transition-colors duration-300">
+		<!-- Hero Section -->
+		<section class="relative h-[90vh] flex items-center overflow-hidden">
+			<div class="absolute inset-0 z-0">
+				<img
+					src={homepage.hero?.heroImage ||
+						"https://picsum.photos/seed/school/1920/1080"}
+					alt={siteConfig.schoolName}
+					class="w-full h-full object-cover"
+					referrerpolicy="no-referrer"
+				/>
+				<div
+					class="absolute inset-0 bg-gradient-to-r from-stone-900/90 via-stone-900/60 to-transparent dark:from-stone-950/95 dark:via-stone-950/70 dark:to-transparent"
+				>
+				</div>
+			</div>
+
+			<div
+				class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white"
+			>
+				<div class="max-w-2xl">
+					<h1
+						class="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight mb-6 tracking-tight uppercase"
+					>
+						{
+							homepage.hero?.heroTitle ||
+								"Membentuk Masa Depan Cemerlang"
+						}
+					</h1>
+					<p
+						class="text-lg sm:text-xl text-stone-200 dark:text-stone-300 mb-10 leading-relaxed max-w-xl"
+					>
+						{
+							homepage.hero?.heroSubtitle ||
+								`Selamat datang di ${siteConfig.schoolName}. Kami berkomitmen memberikan pendidikan terbaik untuk mencetak generasi yang berkarakter dan siap menghadapi tantangan global.`
+						}
+					</p>
+					<div class="flex flex-col sm:flex-row gap-4">
+						<a
+							href="/pendaftaran"
+							class="bg-white dark:bg-stone-100 text-stone-900 px-8 py-4 rounded-full font-bold text-base sm:text-lg hover:bg-stone-100 dark:hover:bg-white transition-all flex items-center justify-center gap-2"
+						>
+							Daftar Sekarang <ArrowRight size={20} />
+						</a>
+						<a
+							href="/profil"
+							class="bg-transparent border-2 border-white/30 backdrop-blur-sm text-white px-8 py-4 rounded-full font-bold text-base sm:text-lg hover:bg-white/10 transition-all text-center"
+						>
+							Pelajari Lebih Lanjut
+						</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Announcement Bar -->
+		{
+			latestAnnouncements.length > 0 && (
+				<section class="bg-stone-50 dark:bg-stone-900/50 py-6 sm:py-10 border-b border-stone-200 dark:border-stone-800 relative group/ticker overflow-hidden">
+					<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+						<div class="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-12">
+							{/* Label Row */}
+							<div class="flex items-center gap-3 shrink-0">
+								<div class="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+								<h2 class="text-xs font-bold uppercase tracking-[0.2em] text-stone-500 dark:text-stone-400 whitespace-nowrap">
+									Pengumuman Terbaru
+								</h2>
+							</div>
+
+							{/* Ticker Row */}
+							<div class="relative flex overflow-hidden flex-grow py-1 border-stone-200/50 dark:border-stone-800/50 lg:border-l lg:pl-12">
+								{/* Left/Right Fades for smooth entry/exit */}
+								<div class="absolute inset-y-0 left-0 w-12 sm:w-16 bg-gradient-to-r from-stone-50 dark:from-[#1c1917] to-transparent z-10 pointer-events-none" />
+								<div class="absolute inset-y-0 right-0 w-12 sm:w-16 bg-gradient-to-l from-stone-50 dark:from-[#1c1917] to-transparent z-10 pointer-events-none" />
+
+								<div class="flex gap-16 animate-marquee whitespace-nowrap group-hover/ticker:[animation-play-state:paused] pointer-events-auto">
+									{/* Original Items */}
+									{latestAnnouncements.map((item, index) => (
+										<a
+											href={`/berita/${item.id}`}
+											class="flex items-center gap-4 group/item inline-flex"
+										>
+											<div class="text-[10px] font-bold text-stone-400 dark:text-stone-500 tabular-nums">
+												{item.data.publishDate.toLocaleDateString(
+													"id-ID",
+													{
+														day: "2-digit",
+														month: "2-digit",
+													},
+												)}
+											</div>
+											<h3
+												class={`text-sm font-bold transition-all duration-300 group-hover/item:text-amber-600
+													${
+														index % 4 === 0
+															? "text-stone-800 dark:text-stone-200"
+															: index % 4 === 1
+																? "text-stone-800 dark:text-stone-200"
+																: index % 4 ===
+																	  2
+																	? "text-stone-800 dark:text-stone-200"
+																	: "text-stone-800 dark:text-stone-200"
+													}
+												`}
+											>
+												{item.data.title}
+											</h3>
+										</a>
+									))}
+									{/* Duplicate Items for Seamless Loop */}
+									{latestAnnouncements.map((item, index) => (
+										<a
+											href={`/berita/${item.id}`}
+											class="flex items-center gap-4 group/item inline-flex"
+											aria-hidden="true"
+										>
+											<div class="text-[10px] font-bold text-stone-400 dark:text-stone-500 tabular-nums">
+												{item.data.publishDate.toLocaleDateString(
+													"id-ID",
+													{
+														day: "2-digit",
+														month: "2-digit",
+													},
+												)}
+											</div>
+											<h3
+												class={`text-sm font-bold transition-all duration-300 group-hover/item:text-amber-600
+													${
+														index % 4 === 0
+															? "text-stone-800 dark:text-stone-200"
+															: index % 4 === 1
+																? "text-stone-800 dark:text-stone-200"
+																: index % 4 ===
+																	  2
+																	? "text-stone-800 dark:text-stone-200"
+																	: "text-stone-800 dark:text-stone-200"
+													}
+												`}
+											>
+												{item.data.title}
+											</h3>
+										</a>
+									))}
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			)
+		}
+
+		<style>
+			@keyframes marquee {
+				0% {
+					transform: translateX(0);
+				}
+				100% {
+					transform: translateX(-50%);
+				}
+			}
+			.animate-marquee {
+				animation: marquee 40s linear infinite;
+				display: flex;
+				width: max-content;
+			}
+		</style>
+
+		<!-- Sambutan Kepala Sekolah -->
+		<section class="py-24 bg-stone-50 dark:bg-stone-950 overflow-hidden">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div
+					class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center"
+				>
+					{/* Photo Side */}
+					<div class="lg:col-span-5 relative">
+						{/* Background Decorative Element */}
+						<div
+							class="absolute -top-10 -left-10 w-40 h-40 bg-amber-100 dark:bg-amber-900/20 rounded-3xl -z-10 animate-pulse"
+						>
+						</div>
+						<div
+							class="absolute -bottom-10 -right-10 w-64 h-64 border-4 border-stone-200 dark:border-stone-800 rounded-[3rem] -z-10"
+						>
+						</div>
+
+						<div class="relative group">
+							<div
+								class="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl transform transition-transform duration-500 group-hover:scale-[1.02]"
+							>
+								<img
+									src={homepage.principal?.principalImage ||
+										"https://picsum.photos/seed/headmaster/800/1000"}
+									alt={homepage.principal?.principalName}
+									class="w-full h-full object-cover"
+									referrerpolicy="no-referrer"
+								/>
+							</div>
+
+							{/* Quote Callout */}
+							{
+								homepage.principal?.principalQuote && (
+									<div class="absolute -bottom-6 -right-4 sm:-right-8 bg-white dark:bg-stone-800 p-6 sm:p-8 rounded-2xl shadow-2xl max-w-xs border-l-4 border-amber-500 z-20">
+										<div class="text-amber-500 mb-2">
+											<svg
+												width="24"
+												height="24"
+												viewBox="0 0 24 24"
+												fill="currentColor"
+											>
+												<path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017V14C19.017 11.2386 16.7784 9 14.017 9V7C17.883 7 21.017 10.134 21.017 14V18C21.017 19.6569 19.6739 21 18.017 21H14.017ZM3.017 21L3.017 18C3.017 16.8954 3.91243 16 5.017 16H8.017V14C8.017 11.2386 5.77843 9 3.017 9V7C6.883 7 10.017 10.134 10.017 14V18C10.017 19.6569 8.67393 21 7.017 21H3.017Z" />
+											</svg>
+										</div>
+										<p class="text-stone-700 dark:text-stone-200 font-medium leading-relaxed italic mb-4 text-sm sm:text-base">
+											{homepage.principal.principalQuote}
+										</p>
+										{homepage.principal
+											.principalQuoteAuthor && (
+											<p class="text-[10px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500">
+												—{" "}
+												{
+													homepage.principal
+														.principalQuoteAuthor
+												}
+											</p>
+										)}
+									</div>
+								)
+							}
+						</div>
+					</div>
+
+					{/* Message Side */}
+					<div class="lg:col-span-7">
+						<div class="flex items-center gap-4 mb-6">
+							<div class="w-12 h-1 bg-amber-500 rounded-full">
+							</div>
+							<span
+								class="text-amber-600 dark:text-amber-400 font-bold tracking-widest uppercase text-sm"
+							>
+								Sambutan Kepala Sekolah
+							</span>
+						</div>
+
+						<h2
+							class="text-3xl sm:text-4xl lg:text-5xl font-bold text-stone-900 dark:text-stone-100 mb-10 tracking-tight leading-tight"
+						>
+							Visi Menuju Masa Depan <span class="text-amber-500"
+								>Cemerlang</span
+							>
+						</h2>
+
+						<div
+							class="space-y-6 text-stone-600 dark:text-stone-400 text-lg leading-relaxed"
+						>
+							{
+								homepage.principal?.principalMessage
+									?.split("\n\n")
+									.map((p) => <p class="relative">{p}</p>)
+							}
+
+							<div
+								class="pt-8 border-t border-stone-200 dark:border-stone-800"
+							>
+								<div>
+									<p
+										class="font-bold text-xl text-stone-900 dark:text-stone-100 mb-1"
+									>
+										{
+											homepage.principal?.principalName ||
+												"Nama Kepala Sekolah"
+										}
+									</p>
+									<p
+										class="text-amber-600 dark:text-amber-400 font-medium"
+									>
+										{
+											homepage.principal?.principalRole ||
+												"Kepala Sekolah"
+										}
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Berita Terbaru -->
+		<section class="py-12 bg-white dark:bg-stone-950">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="flex justify-between items-end mb-16">
+					<div>
+						<h2
+							class="text-4xl font-bold text-stone-900 dark:text-stone-100 mb-4 tracking-tight text-center lg:text-left"
+						>
+							Berita & Pengumuman
+						</h2>
+						<p
+							class="text-lg text-stone-600 dark:text-stone-400 text-center lg:text-left"
+						>
+							Ikuti perkembangan terbaru dan kegiatan seru di
+							sekolah kami.
+						</p>
+					</div>
+					<a
+						href="/berita"
+						class="hidden md:flex items-center gap-2 text-stone-900 dark:text-stone-100 font-bold hover:gap-3 transition-all"
+					>
+						Lihat Semua Berita <ArrowRight size={20} />
+					</a>
+				</div>
+
+				<div
+					class="grid grid-cols-1 md:grid-cols-12 gap-2 min-h-[500px]"
+				>
+					{
+						featuredNews.length > 0 ? (
+							<>
+								{/* Main Featured Post */}
+								{featuredNews[0] && (
+									<div class="md:col-span-7 h-full">
+										<article class="relative h-full min-h-[400px] overflow-hidden rounded-lg group">
+											<a
+												href={`/berita/${featuredNews[0].id}`}
+												class="absolute inset-0 z-0"
+											>
+												<img
+													src={
+														featuredNews[0].data
+															.image ||
+														`https://picsum.photos/seed/${featuredNews[0].id}/1200/800`
+													}
+													alt={
+														featuredNews[0].data
+															.title
+													}
+													class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+													referrerpolicy="no-referrer"
+												/>
+												<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+											</a>
+
+											<div class="absolute top-8 left-8 z-10">
+												<a
+													href={`/kategori/${(featuredNews[0].data.category || "Utama").toLowerCase()}`}
+													class="bg-amber-600 text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg hover:bg-amber-700 transition-colors"
+												>
+													{featuredNews[0].data
+														.category || "Utama"}
+												</a>
+											</div>
+
+											<div class="absolute bottom-0 p-6 sm:p-10 w-full">
+												<div class="flex items-center gap-3 text-xs sm:text-sm text-stone-300 mb-3 font-medium">
+													<time
+														datetime={featuredNews[0].data.publishDate.toISOString()}
+													>
+														{featuredNews[0].data.publishDate.toLocaleDateString(
+															"id-ID",
+															{
+																day: "numeric",
+																month: "long",
+																year: "numeric",
+															},
+														)}
+													</time>
+													<span>•</span>
+													<span>
+														{
+															featuredNews[0].data
+																.author
+														}
+													</span>
+												</div>
+												<h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight group-hover:text-amber-400 transition-colors">
+													<a
+														href={`/berita/${featuredNews[0].id}`}
+														class="after:absolute after:inset-0"
+													>
+														{
+															featuredNews[0].data
+																.title
+														}
+													</a>
+												</h3>
+												<p class="text-stone-300 line-clamp-2 max-w-xl leading-relaxed text-sm sm:text-base">
+													{
+														featuredNews[0].data
+															.description
+													}
+												</p>
+											</div>
+										</article>
+									</div>
+								)}
+
+								{/* Side Grid Posts */}
+								{featuredNews.length > 1 && (
+									<div class="md:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2">
+										{featuredNews.slice(1).map((news) => (
+											<article class="relative aspect-square overflow-hidden rounded-lg group bg-stone-900">
+												<a
+													href={`/berita/${news.id}`}
+													class="absolute inset-0 z-0"
+												>
+													<img
+														src={
+															news.data.image ||
+															`https://picsum.photos/seed/${news.id}/600/600`
+														}
+														alt={news.data.title}
+														class="w-full h-full object-cover opacity-60 group-hover:opacity-40 group-hover:scale-110 transition-all duration-700"
+														referrerpolicy="no-referrer"
+													/>
+													<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+												</a>
+
+												<div class="absolute top-4 left-4 z-10">
+													<a
+														href={`/kategori/${(news.data.category || "Berita").toLowerCase()}`}
+														class="bg-amber-600/80 backdrop-blur-md border border-white/20 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-amber-700 transition-colors"
+													>
+														{news.data.category ||
+															"Berita"}
+													</a>
+												</div>
+
+												<div class="absolute bottom-0 p-4 sm:p-6 w-full">
+													<time
+														class="text-[9px] text-stone-400 mb-1.5 block font-bold uppercase tracking-tighter"
+														datetime={news.data.publishDate.toISOString()}
+													>
+														{news.data.publishDate.toLocaleDateString(
+															"id-ID",
+															{
+																day: "numeric",
+																month: "short",
+																year: "numeric",
+															},
+														)}
+													</time>
+													<h3 class="text-sm sm:text-base font-bold text-white leading-tight group-hover:text-amber-400 transition-colors line-clamp-2">
+														<a
+															href={`/berita/${news.id}`}
+															class="after:absolute after:inset-0"
+														>
+															{news.data.title}
+														</a>
+													</h3>
+												</div>
+											</article>
+										))}
+									</div>
+								)}
+							</>
+						) : (
+							<div class="lg:col-span-12 text-center py-12 bg-stone-50 dark:bg-stone-900 rounded-3xl border-2 border-dashed border-stone-200 dark:border-stone-800 h-full flex items-center justify-center">
+								<p class="text-stone-500 dark:text-stone-400">
+									Belum ada berita yang dipublikasikan.
+								</p>
+							</div>
+						)
+					}
+				</div>
+			</div>
+		</section>
+		<!-- Keunggulan -->
+		<section
+			class="py-32 bg-stone-50 dark:bg-stone-950 relative overflow-hidden"
+		>
+			{/* Background Decorative Elements */}
+			<div
+				class="absolute top-0 right-0 w-96 h-96 bg-amber-100/20 dark:bg-amber-900/10 blur-3xl -z-10"
+			>
+			</div>
+			<div
+				class="absolute bottom-0 left-0 w-96 h-96 bg-stone-200/50 dark:bg-stone-900/30 blur-3xl -z-10"
+			>
+			</div>
+
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center max-w-3xl mx-auto mb-24">
+					<div class="flex items-center justify-center gap-3 mb-6">
+						<div class="w-10 h-1 bg-amber-500 rounded-full"></div>
+						<span
+							class="text-amber-600 dark:text-amber-400 font-bold tracking-widest uppercase text-sm"
+							>Best Features</span
+						>
+						<div class="w-10 h-1 bg-amber-500 rounded-full"></div>
+					</div>
+					<h2
+						class="text-4xl sm:text-5xl font-bold text-stone-900 dark:text-stone-100 mb-8 tracking-tight leading-tight"
+					>
+						Mengapa Harus Memilih <span class="text-amber-500"
+							>Kami?</span
+						>
+					</h2>
+					<p
+						class="text-lg text-stone-600 dark:text-stone-400 leading-relaxed"
+					>
+						Kami berkomitmen menghadirkan ekosistem pendidikan
+						terbaik melalui fasilitas modern dan tenaga pengajar
+						berkualitas tinggi.
+					</p>
+				</div>
+
+				<div
+					class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 px-4 md:px-0"
+				>
+					{/* Card 1 */}
+					<div
+						class="bg-white dark:bg-stone-900 p-12 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 border-2 border-stone-100/50 dark:border-stone-800/50 relative overflow-hidden group"
+					>
+						<span
+							class="absolute -bottom-4 -right-2 text-9xl font-black text-stone-100/10 dark:text-white/5 select-none transition-all duration-700 group-hover:scale-110 group-hover:-translate-x-4"
+							>01</span
+						>
+
+						<div
+							class="w-20 h-20 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/20 rounded-2xl flex items-center justify-center text-amber-600 dark:text-amber-400 mb-10 shadow-inner group-hover:scale-110 transition-transform duration-500"
+						>
+							<Award size={36} strokeWidth={2.5} />
+						</div>
+
+						<h3
+							class="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-6 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors"
+						>
+							Akreditasi A
+						</h3>
+						<p
+							class="text-stone-600 dark:text-stone-400 leading-relaxed text-lg"
+						>
+							Sekolah kami telah terakreditasi A oleh BAN-S/M,
+							menjamin kualitas pendidikan yang sesuai standar
+							nasional tertinggi.
+						</p>
+					</div>
+
+					{/* Card 2 */}
+					<div
+						class="bg-white dark:bg-stone-900 p-12 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 border-2 border-stone-100/50 dark:border-stone-800/50 relative overflow-hidden group"
+					>
+						<span
+							class="absolute -bottom-4 -right-2 text-9xl font-black text-stone-100/10 dark:text-white/5 select-none transition-all duration-700 group-hover:scale-110 group-hover:-translate-x-4"
+							>02</span
+						>
+
+						<div
+							class="w-20 h-20 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/20 rounded-2xl flex items-center justify-center text-amber-600 dark:text-amber-400 mb-10 shadow-inner group-hover:scale-110 transition-transform duration-500"
+						>
+							<Users size={36} strokeWidth={2.5} />
+						</div>
+
+						<h3
+							class="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-6 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors"
+						>
+							Tenaga Pendidik Ahli
+						</h3>
+						<p
+							class="text-stone-600 dark:text-stone-400 leading-relaxed text-lg"
+						>
+							Didukung oleh guru-guru berpengalaman dan kompeten
+							di bidangnya yang berdedikasi tinggi membimbing
+							siswa.
+						</p>
+					</div>
+
+					{/* Card 3 */}
+					<div
+						class="bg-white dark:bg-stone-900 p-12 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 border-2 border-stone-100/50 dark:border-stone-800/50 relative overflow-hidden group"
+					>
+						<span
+							class="absolute -bottom-4 -right-2 text-9xl font-black text-stone-100/10 dark:text-white/5 select-none transition-all duration-700 group-hover:scale-110 group-hover:-translate-x-4"
+							>03</span
+						>
+
+						<div
+							class="w-20 h-20 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/20 rounded-2xl flex items-center justify-center text-amber-600 dark:text-amber-400 mb-10 shadow-inner group-hover:scale-110 transition-transform duration-500"
+						>
+							<BookOpen size={36} strokeWidth={2.5} />
+						</div>
+
+						<h3
+							class="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-6 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors"
+						>
+							Fasilitas Modern
+						</h3>
+						<p
+							class="text-stone-600 dark:text-stone-400 leading-relaxed text-lg"
+						>
+							Laboratorium lengkap, perpustakaan digital, dan
+							ruang kelas ber-AC untuk kenyamanan belajar
+							mengajar.
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Statistik Sekolah -->
+		{
+			homepage.stats && homepage.stats.length > 0 && (
+				<section class="py-16 md:py-24 bg-stone-900 text-white overflow-hidden relative">
+					<div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48 blur-3xl" />
+					<div class="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full -ml-48 -mb-48 blur-3xl" />
+
+					<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+						<div class="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+							{homepage.stats.map((stat) => (
+								<div class="text-center">
+									<div class="text-4xl md:text-6xl font-bold mb-2 tracking-tighter tabular-nums">
+										{stat.value}
+									</div>
+									<div class="text-stone-400 font-medium uppercase tracking-widest text-xs md:text-sm">
+										{stat.label}
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
+				</section>
+			)
+		}
+
+		<OsisSection />
+
+		<TeacherSlider />
+
+		<!-- Galeri Highlight -->
+		<section class="py-24 bg-stone-50 dark:bg-stone-900/20">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="flex justify-between items-end mb-16">
+					<div>
+						<h2
+							class="text-4xl font-bold text-stone-900 dark:text-stone-100 mb-4 tracking-tight"
+						>
+							Galeri Foto
+						</h2>
+						<p class="text-lg text-stone-600 dark:text-stone-400">
+							Momen-momen berharga dalam perjalanan pendidikan
+							kami.
+						</p>
+					</div>
+					<a
+						href="/galeri"
+						class="hidden md:flex items-center gap-2 text-stone-900 dark:text-stone-100 font-bold hover:gap-3 transition-all"
+					>
+						Lihat Galeri <ArrowRight size={20} />
+					</a>
+				</div>
+
+				<div class="columns-2 lg:columns-4 gap-4 space-y-4">
+					{
+						featuredGallery.map((item) => (
+							<div class="break-inside-avoid rounded-2xl overflow-hidden group relative mb-4">
+								<img
+									src={item.data.image}
+									alt={item.data.title}
+									class="w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700"
+									referrerpolicy="no-referrer"
+								/>
+								<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+									<p class="text-white text-sm font-bold truncate">
+										{item.data.title}
+									</p>
+								</div>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- CTA Pendaftaran -->
+		<section class="py-16 md:py-24 bg-white dark:bg-stone-950">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div
+					class="bg-stone-900 dark:bg-stone-100 rounded-lg p-8 sm:p-12 md:p-24 text-center text-white dark:text-stone-900 relative overflow-hidden"
+				>
+					<div
+						class="absolute top-0 right-0 w-64 h-64 bg-white/5 dark:bg-black/5 rounded-full -mr-32 -mt-32 blur-3xl"
+					>
+					</div>
+					<div
+						class="absolute bottom-0 left-0 w-64 h-64 bg-white/5 dark:bg-black/5 rounded-full -ml-32 -mb-32 blur-3xl"
+					>
+					</div>
+
+					<div class="relative z-10 max-w-3xl mx-auto">
+						<h2
+							class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 tracking-tight italic"
+						>
+							Siap Bergabung dengan Kami?
+						</h2>
+						<p
+							class="text-lg sm:text-xl text-stone-400 dark:text-stone-600 mb-10 sm:mb-12 leading-relaxed"
+						>
+							Pendaftaran peserta didik baru tahun ajaran
+							2024/2025 telah dibuka. <br
+								class="hidden sm:block"
+							/> Segera amankan kursi Anda dan jadilah bagian dari komunitas
+							pembelajar kami.
+						</p>
+						<div
+							class="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center"
+						>
+							<a
+								href="/pendaftaran"
+								class="bg-white dark:bg-stone-900 text-stone-900 dark:text-white px-8 py-4 sm:px-10 sm:py-5 rounded-full font-bold text-lg sm:text-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-all shadow-xl"
+							>
+								Daftar Sekarang
+							</a>
+							<a
+								href="/kontak"
+								class="bg-transparent border-2 border-white/20 dark:border-stone-300 text-white dark:text-stone-900 px-8 py-4 sm:px-10 sm:py-5 rounded-full font-bold text-lg sm:text-xl hover:bg-white/10 dark:hover:bg-black/5 transition-all"
+							>
+								Hubungi Kami
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<Footer />
+</Layout>

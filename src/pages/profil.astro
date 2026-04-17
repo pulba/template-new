@@ -1,0 +1,111 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import { Target, History } from 'lucide-react';
+import { getEntry } from 'astro:content';
+
+const identity = await getEntry('settings', 'identity');
+const siteConfig = identity?.data || { schoolName: "Nama Sekolah" };
+
+const profilEntry = await getEntry('settings', 'profil');
+const profil = profilEntry?.data || {
+	headline: "Membangun Karakter, Mencetak Pemimpin.",
+	description: "Berdiri sejak tahun 1995, sekolah kami telah menjadi rumah bagi ribuan siswa untuk tumbuh dan berkembang menjadi pribadi yang unggul.",
+	vision: "Menjadi lembaga pendidikan terkemuka yang menghasilkan lulusan berakhlak mulia, cerdas, kreatif, dan kompetitif di tingkat internasional.",
+	missions: [],
+	historyBody: "",
+	facilities: []
+};
+---
+
+<Layout title={`Profil - ${siteConfig.schoolName}`}>
+	<Navbar />
+	
+	<main class="bg-white dark:bg-stone-950 transition-colors duration-300">
+		<!-- Header -->
+		<section class="py-16 md:py-24 bg-stone-50 dark:bg-stone-900/50 border-b border-stone-200 dark:border-stone-800">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-stone-950 dark:text-stone-100">
+				<span class="text-stone-500 font-bold tracking-widest uppercase text-sm mb-4 block">Tentang Kami</span>
+				<h1 class="text-3xl sm:text-4xl lg:text-6xl font-bold mb-6 tracking-tight" set:html={profil.headline?.replace(", ", ", <br class='hidden sm:block'/>") || "Membangun Karakter, <br class='hidden sm:block'/>Mencetak Pemimpin."}></h1>
+				<p class="text-lg sm:text-xl text-stone-600 dark:text-stone-400 max-w-2xl mx-auto leading-relaxed">
+					{profil.description}
+				</p>
+			</div>
+		</section>
+
+		<!-- Visi & Misi -->
+		<section class="py-16 md:py-24">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+					<div class="bg-stone-900 text-white p-8 sm:p-12 md:p-16 rounded-lg relative overflow-hidden">
+						<div class="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-20 -mt-20 blur-2xl"></div>
+						<Target className="text-stone-500 mb-8" size={48} />
+						<h2 class="text-2xl sm:text-3xl font-bold mb-8 tracking-tight">Visi Kami</h2>
+						<p class="text-xl sm:text-2xl font-medium leading-relaxed italic text-stone-300">
+							"{profil.vision}"
+						</p>
+					</div>
+					
+					<div class="bg-stone-100 dark:bg-stone-900 p-8 sm:p-12 md:p-16 rounded-lg">
+						<h2 class="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100 mb-8 tracking-tight">Misi Kami</h2>
+						<ul class="space-y-6">
+							{profil.missions?.map((mission, index) => (
+								<li class="flex gap-4">
+									<div class="w-8 h-8 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-full flex items-center justify-center font-bold shrink-0">{index + 1}</div>
+									<p class="text-stone-600 dark:text-stone-400 leading-relaxed">{mission}</p>
+								</li>
+							))}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Sejarah -->
+		<section class="py-24 bg-stone-50 dark:bg-stone-900/50">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+					<div>
+						<div class="flex items-center gap-3 mb-6">
+							<History className="text-stone-500" />
+							<span class="font-bold text-stone-900 dark:text-stone-100 uppercase tracking-widest text-sm">Sejarah Singkat</span>
+						</div>
+						<h2 class="text-3xl sm:text-4xl font-bold text-stone-900 dark:text-stone-100 mb-8 tracking-tight">Perjalanan Panjang Kami</h2>
+						<div class="space-y-6 text-stone-600 dark:text-stone-400 text-base sm:text-lg leading-relaxed whitespace-pre-line">
+							{profil.historyBody}
+						</div>
+					</div>
+					<div class="grid grid-cols-2 gap-4">
+						<img src={profil.historyImage1 || "https://picsum.photos/seed/hist1/600/800"} alt="Sejarah 1" class="rounded-3xl shadow-lg mt-12" referrerpolicy="no-referrer" />
+						<img src={profil.historyImage2 || "https://picsum.photos/seed/hist2/600/800"} alt="Sejarah 2" class="rounded-3xl shadow-lg" referrerpolicy="no-referrer" />
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Fasilitas -->
+		<section class="py-24">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center max-w-3xl mx-auto mb-20">
+					<h2 class="text-4xl font-bold text-stone-900 dark:text-stone-100 mb-6 tracking-tight">Fasilitas Sekolah</h2>
+					<p class="text-lg text-stone-600 dark:text-stone-400">Lingkungan belajar yang lengkap dan modern untuk mendukung kreativitas dan kenyamanan siswa.</p>
+				</div>
+				
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+					{profil.facilities?.map((item) => (
+						<div class="group">
+							<div class="aspect-[4/3] rounded-3xl overflow-hidden mb-6">
+								<img src={item.img} alt={item.name} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" referrerpolicy="no-referrer" />
+							</div>
+							<h3 class="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">{item.name}</h3>
+							<p class="text-stone-600 dark:text-stone-400 text-sm leading-relaxed">{item.desc}</p>
+						</div>
+					))}
+				</div>
+			</div>
+		</section>
+	</main>
+	
+	<Footer />
+</Layout>

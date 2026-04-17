@@ -1,0 +1,71 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import { Hash, ChevronRight } from 'lucide-react';
+
+const allNews = await getCollection('berita');
+const categories = [...new Set(allNews.map(n => n.data.category || "Berita"))].sort();
+
+// Count posts per category
+const categoryCounts = categories.map(cat => ({
+  name: cat,
+  count: allNews.filter(n => (n.data.category || "Berita") === cat).length
+}));
+
+const identity = await getEntry('settings', 'identity');
+const siteConfig = identity?.data || { schoolName: "Nama Sekolah" };
+---
+
+<Layout title="Kategori Berita" description="Jelajahi berita sekolah berdasarkan kategori.">
+  <Navbar />
+  
+  <main class="bg-white dark:bg-stone-950 min-h-screen transition-colors duration-300 pb-24">
+    {/* Page Header */}
+    <div class="bg-stone-50 dark:bg-stone-900/50 border-b border-stone-100 dark:border-stone-800 py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <nav class="flex justify-center items-center gap-2 text-xs font-bold text-stone-400 uppercase tracking-widest mb-8">
+          <a href="/" class="hover:text-amber-600">Home</a>
+          <ChevronRight size={12} />
+          <a href="/berita" class="hover:text-amber-600">Berita</a>
+          <ChevronRight size={12} />
+          <span class="text-stone-900 dark:text-white uppercase">Kategori</span>
+        </nav>
+        <h1 class="text-5xl sm:text-6xl font-extrabold text-stone-900 dark:text-white tracking-tight uppercase mb-6">
+          Kategori Berita
+        </h1>
+        <p class="text-lg text-stone-500 dark:text-stone-400 max-w-2xl mx-auto leading-relaxed italic">
+          Temukan topik yang Anda cari dengan mudah melalui pengelompokan kategori berikut.
+        </p>
+      </div>
+    </div>
+
+    {/* Category Grid */}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {categoryCounts.map((cat) => (
+          <a href={`/kategori/${cat.name.toLowerCase()}`} class="group relative bg-white dark:bg-stone-900 p-10 rounded-2xl border border-stone-100 dark:border-stone-800 shadow-sm hover:shadow-xl hover:border-amber-600/30 transition-all duration-500 overflow-hidden">
+            <div class="absolute -top-4 -right-4 w-24 h-24 bg-amber-600/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+            <div class="relative z-10">
+              <div class="w-14 h-14 bg-stone-50 dark:bg-stone-800 rounded-xl flex items-center justify-center text-amber-600 mb-8 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-500">
+                <Hash size={28} />
+              </div>
+              <h3 class="text-2xl font-bold text-stone-900 dark:text-white mb-4 uppercase tracking-tight group-hover:text-amber-600 transition-colors">
+                {cat.name}
+              </h3>
+              <p class="text-stone-400 text-sm font-bold uppercase tracking-widest">
+                {cat.count} Artikel
+              </p>
+            </div>
+            <div class="absolute bottom-10 right-10 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">
+              <ChevronRight size={24} className="text-amber-600" />
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

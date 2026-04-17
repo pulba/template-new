@@ -1,0 +1,88 @@
+---
+import { getCollection } from 'astro:content';
+
+const allTeachers = await getCollection('guru');
+const teachers = allTeachers.sort((a, b) => (a.data.order ?? 10) - (b.data.order ?? 10));
+
+// Tampilkan slider hanya jika ada data
+if (teachers.length === 0) return null;
+
+// Duplikasi data untuk efek infinite scroll yang mulus
+const displayTeachers = [...teachers, ...teachers, ...teachers];
+---
+
+<section class="py-24 bg-stone-50 dark:bg-stone-900/10 overflow-hidden relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div class="max-w-2xl">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-1 bg-amber-500 rounded-full" />
+                    <span class="text-amber-600 dark:text-amber-400 font-bold tracking-widest uppercase text-sm">
+                        Our Educators
+                    </span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-stone-900 dark:text-stone-100 mb-4 tracking-tight">
+                    Tenaga <span class="text-amber-500">Pendidik</span> & Staf
+                </h2>
+                <p class="text-lg text-stone-600 dark:text-stone-400">
+                    Didukung oleh barisan pengajar inspiratif yang berdedikasi tinggi untuk mencetak generasi unggul masa depan.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    {/* Marquee Container */}
+    <div class="relative flex overflow-x-hidden group">
+        <div class="animate-marquee flex gap-8 whitespace-nowrap hover:[animation-play-state:paused]">
+            {displayTeachers.map((teacher) => (
+                <div class="w-72 shrink-0">
+                    <div class="bg-white dark:bg-stone-900 rounded-[2.5rem] p-6 border border-stone-100 dark:border-stone-800 shadow-sm transition-all duration-500 hover:shadow-2xl hover:border-amber-500/30">
+                        <div class="aspect-[4/5] rounded-3xl overflow-hidden mb-6 group-hover:shadow-lg transition-all">
+                            <img
+                                src={teacher.data.photo || "https://picsum.photos/seed/teacher/400/500"}
+                                alt={teacher.data.name}
+                                class="w-full h-full object-cover"
+                                loading="lazy"
+                            />
+                        </div>
+                        <div class="text-center">
+                            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-amber-600 dark:text-amber-400 mb-2">
+                                {teacher.data.mapel || teacher.data.role}
+                            </p>
+                            <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100 truncate mb-1">
+                                {teacher.data.name}
+                            </h3>
+                            <p class="text-stone-400 dark:text-stone-500 text-xs font-medium">
+                                {teacher.data.category === 'pimpinan' ? 'Pimpinan Sekolah' : 'Tenaga Pendidik'}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+
+        {/* Gradient Fades for depth */}
+        <div class="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-stone-50 dark:from-stone-950 to-transparent z-10 pointer-events-none" />
+        <div class="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-stone-50 dark:from-stone-950 to-transparent z-10 pointer-events-none" />
+    </div>
+</section>
+
+<style>
+    .animate-marquee {
+        display: flex;
+        width: max-content;
+        animation: marquee 40s linear infinite;
+    }
+
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-33.3333%); }
+    }
+
+    /* Adjust speed for mobile if needed */
+    @media (max-width: 640px) {
+        .animate-marquee {
+            animation-duration: 25s;
+        }
+    }
+</style>

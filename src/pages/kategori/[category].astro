@@ -1,0 +1,122 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import NewsSection from "../../components/NewsSection.astro";
+import NewsSidebar from "../../components/NewsSidebar.astro";
+import { ChevronRight } from "lucide-react";
+
+// SSR Mode
+const { category: categorySlug } = Astro.params;
+const url = new URL(Astro.url);
+const currentPage = Number(url.searchParams.get("page")) || 1;
+const postsPerPage = 9;
+
+const allNews = await getCollection("berita");
+const categoryPosts = allNews.filter(
+  (n) =>
+    (n.data.category || "Berita").toLowerCase() === categorySlug?.toLowerCase(),
+);
+const sortedPosts = categoryPosts.sort(
+  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
+);
+
+// Pagination logic
+const totalPages = Math.ceil(sortedPosts.length / postsPerPage);
+const paginatedPosts = sortedPosts.slice(
+  (currentPage - 1) * postsPerPage,
+  currentPage * postsPerPage,
+);
+
+// Proper name for display
+const displayTitle =
+  categoryPosts.length > 0 ? categoryPosts[0].data.category : categorySlug;
+
+const identity = await getEntry("settings", "identity");
+const siteConfig = identity?.data || { schoolName: "Nama Sekolah" };
+---
+
+<Layout title={`Kategori: ${displayTitle}`}>
+  <Navbar />
+
+  <main class="bg-white dark:bg-stone-950 min-h-screen">
+    <div
+      class="bg-stone-50 dark:bg-stone-900 border-b border-stone-100 dark:border-stone-800 py-12"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav
+          class="flex items-center gap-2 text-xs font-bold text-stone-400 uppercase tracking-widest mb-6"
+        >
+          <a href="/" class="hover:text-amber-600">Home</a>
+          <ChevronRight size={12} />
+          <a href="/berita" class="hover:text-amber-600">Berita</a>
+          <ChevronRight size={12} />
+          <span class="text-stone-900 dark:text-white uppercase"
+            >{displayTitle}</span
+          >
+        </nav>
+        <h1
+          class="text-4xl font-extrabold text-stone-900 dark:text-white uppercase border-l-8 border-amber-600 pl-6"
+        >
+          {displayTitle}
+        </h1>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div class="lg:col-span-8">
+          <NewsSection
+            title={`Artikel ${displayTitle}`}
+            posts={paginatedPosts}
+            layout="cards-3col"
+            hideViewAll={true}
+          />
+
+          {/* Pagination UI */}
+          {totalPages > 1 && (
+            <div class="flex justify-center items-center gap-2 mt-16 pt-8 border-t border-stone-100 dark:border-stone-800">
+              {currentPage > 1 && (
+                <a
+                  href={`?page=${currentPage - 1}`}
+                  class="p-2 rounded-lg border border-stone-100 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-900 transition-colors text-stone-600 dark:text-stone-400"
+                >
+                  <ChevronRight size={20} className="rotate-180" />
+                </a>
+              )}
+              
+              <div class="flex items-center gap-2">
+                {[...Array(totalPages)].map((_, i) => (
+                  <a
+                    href={`?page=${i + 1}`}
+                    class={`w-10 h-10 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${
+                      currentPage === i + 1
+                        ? "bg-amber-600 text-white shadow-lg shadow-amber-600/20"
+                        : "text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-900"
+                    }`}
+                  >
+                    {i + 1}
+                  </a>
+                ))}
+              </div>
+
+              {currentPage < totalPages && (
+                <a
+                  href={`?page=${currentPage + 1}`}
+                  class="p-2 rounded-lg border border-stone-100 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-900 transition-colors text-stone-600 dark:text-stone-400"
+                >
+                  <ChevronRight size={20} />
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+        <div class="lg:col-span-4">
+          <NewsSidebar />
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>

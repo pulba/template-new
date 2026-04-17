@@ -1,0 +1,43 @@
+{
+  "phone2": "(021) 8765-4321",
+  "logoUrl": "/images/uploads/logo-sma.png",
+  "mapLatitude": -6.2088,
+  "phone": "(021) 1234-56789",
+  "openingHoursSat": "Sabtu: 08.00 - 12.00",
+  "whatsapp": "6285840294989",
+  "schoolShortName": "SMA-SAI",
+  "mapLongitude": 106.8456,
+  "address": "Jl. Pendidikan No. 123, Kota Pendidikan, 12345",
+  "email2": "ppdb@sekolah.sch.id",
+  "socialMedia": [
+    {
+      "platform": "Instagram",
+      "url": "https://instagram.com/sekolah"
+    },
+    {
+      "platform": "Facebook",
+      "url": "#"
+    },
+    {
+      "platform": "Youtube",
+      "url": "#"
+    },
+    {
+      "platform": "TikTok",
+      "url": "https://www.tiktok.com/"
+    },
+    {
+      "platform": "Github",
+      "url": "https://github.com/"
+    },
+    {
+      "platform": "LinkedIn",
+      "url": "https://www.linkedin.com/"
+    }
+  ],
+  "openingHours": "Senin - Jumat: 07.00 - 16.00",
+  "faviconUrl": "/images/uploads/logo-sma.png",
+  "email": "info@sekolah.sch.id",
+  "description": "Website Resmi Sekolah dengan kurikulum modern dan fasilitas lengkap.",
+  "schoolName": "SMA 01 INDONESIA"
+}

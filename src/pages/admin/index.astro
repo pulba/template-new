@@ -1,0 +1,36 @@
+---
+import { getEntry } from 'astro:content';
+
+const identity = await getEntry('settings', 'identity');
+const siteConfig = identity?.data || { schoolName: "Nama Sekolah" };
+---
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMS Admin | {siteConfig.schoolName}</title>
+  <style is:inline>
+    /* Kustomisasi Logo Login */
+    .css-60m31f-Icon-LogoIcon {
+      display: none !important;
+    }
+    .css-19v0v5l-LoginButton-button-default-button {
+      background-color: #1c1917 !important; /* Stone-900 */
+    }
+    /* Menambahkan Teks Nama Sekolah di atas Login */
+    .css-19v0v5l-LoginButton-button-default-button::before {
+      content: "ADMIN DASHBOARD";
+      display: block;
+      margin-bottom: 2rem;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: #1c1917;
+      letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+<body>
+  <script is:inline src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+</body>
+</html>

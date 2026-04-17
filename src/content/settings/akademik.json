@@ -1,0 +1,33 @@
+{
+  "headline": "Akademik & Kesiswaan",
+  "description": "Kurikulum yang menantang dan kegiatan ekstrakurikuler yang beragam untuk mengembangkan potensi terbaik setiap siswa.",
+  "curriculumTitle": "Kurikulum Merdeka Plus",
+  "curriculumDesc": "Kami menerapkan Kurikulum Merdeka yang diperkaya dengan program penguatan karakter dan literasi digital. Fokus kami adalah pada pengembangan kompetensi abad 21: Berpikir Kritis, Kreativitas, Kolaborasi, dan Komunikasi.",
+  "curriculumFeatures": [
+    "Pembelajaran Berbasis Proyek (PBL)",
+    "Integrasi Teknologi dalam Kelas",
+    "Program Literasi & Numerasi Intensif",
+    "Pengembangan Soft Skills & Kepemimpinan"
+  ],
+  "curriculumImage": "/images/uploads/kurikulum-utama.png",
+  "statsGraduation": "100%",
+  "statsUni": "85%",
+  "extraHeadline": "Ekstrakurikuler",
+  "extraDesc": "Wadah bagi siswa untuk mengeksplorasi minat dan bakat di luar jam pelajaran akademik.",
+  "extraGroups": [
+    { "name": "Olahraga", "items": ["Basket", "Futsal", "Bulu Tangkis", "Panahan"] },
+    { "name": "Seni & Budaya", "items": ["Seni Lukis", "Tari Tradisional", "Paduan Suara", "Teater"] },
+    { "name": "Sains & Teknologi", "items": ["Robotik", "Coding Club", "Karya Ilmiah Remaja", "Astronomi"] },
+    { "name": "Kepemimpinan", "items": ["OSIS", "Pramuka", "Paskibra", "PMR"] },
+    { "name": "Bahasa", "items": ["English Club", "Japanese Club", "Debat Bahasa", "Jurnalistik"] },
+    { "name": "Keagamaan", "items": ["Rohis", "Rohkris", "Tahfidz Quran", "Seni Kaligrafi"] }
+  ],
+  "awardsHeadline": "Galeri Prestasi",
+  "awardsDesc": "Kebanggaan kami adalah melihat siswa-siswi kami bersinar dan meraih penghargaan di berbagai bidang kompetisi.",
+  "awardsTotal": "500+ Penghargaan",
+  "featuredAwards": [
+    { "title": "Juara 1 Olimpiade Sains Nasional", "category": "Akademik", "year": "2023", "img": "/images/uploads/award-osn.png" },
+    { "title": "Medali Emas Kejuaraan Basket Provinsi", "category": "Olahraga", "year": "2023", "img": "/images/uploads/award-basket.png" },
+    { "title": "Juara Umum Festival Seni Pelajar", "category": "Seni", "year": "2022", "img": "/images/uploads/award-seni.png" }
+  ]
+}

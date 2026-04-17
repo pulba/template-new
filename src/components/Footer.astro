@@ -1,0 +1,122 @@
+---
+import { 
+  Facebook, 
+  Instagram, 
+  Youtube, 
+  Twitter, 
+  Linkedin, 
+  Github, 
+  Mail, 
+  Phone, 
+  MapPin,
+  Star
+} from 'lucide-react';
+import { getEntry } from 'astro:content';
+
+const identity = await getEntry('settings', 'identity');
+const siteConfig = identity?.data || { schoolName: "Nama Sekolah" };
+
+// Icon Mapping (Pure JS part)
+const iconMap = {
+  'Facebook': Facebook,
+  'Instagram': Instagram,
+  'Youtube': Youtube,
+  'Twitter': Twitter,
+  'LinkedIn': Linkedin,
+  'Github': Github,
+};
+---
+
+<footer class="bg-stone-900 text-stone-300 pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+      <div class="col-span-1 md:col-span-1">
+        <div class="flex items-center gap-2 sm:gap-3 mb-6">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-lg sm:rounded-xl overflow-hidden flex items-center justify-center text-stone-900 font-bold text-xl sm:text-2xl uppercase shadow-sm">
+            {siteConfig.logoUrl && siteConfig.logoUrl !== "/favicon.svg" ? (
+              <img src={siteConfig.logoUrl} alt={siteConfig.schoolName} class="w-full h-full object-contain p-1" />
+            ) : (
+              <span>{siteConfig.schoolName.charAt(0)}</span>
+            )}
+          </div>
+          <span class="font-bold text-lg sm:text-xl tracking-tight text-white uppercase">{siteConfig.schoolName}</span>
+        </div>
+        <p class="text-stone-400 leading-relaxed text-sm sm:text-base">
+          {siteConfig.description || "Membentuk generasi unggul yang berkarakter, inovatif, dan berwawasan global melalui pendidikan berkualitas."}
+        </p>
+      </div>
+      
+      <div>
+        <h3 class="text-white font-bold text-lg mb-6">Tautan Cepat</h3>
+        <ul class="space-y-4">
+          <li><a href="/profil" class="hover:text-white transition-colors">Profil Sekolah</a></li>
+          <li><a href="/akademik" class="hover:text-white transition-colors">Kurikulum</a></li>
+          <li><a href="/pendaftaran" class="hover:text-white transition-colors">Pendaftaran Siswa</a></li>
+          <li><a href="/berita" class="hover:text-white transition-colors">Berita & Kegiatan</a></li>
+          <li><a href="/galeri" class="hover:text-white transition-colors">Galeri Foto</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h3 class="text-white font-bold text-lg mb-6">Kontak Kami</h3>
+        <ul class="space-y-4">
+          <li class="flex items-start gap-3">
+            <MapPin size={20} className="text-stone-500 shrink-0 mt-1" />
+            <span>{siteConfig.address || "Jl. Pendidikan No. 123, Kota Pendidikan, 12345"}</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <Phone size={20} className="text-stone-500 shrink-0" />
+            <span>{siteConfig.phone || "(021) 1234-5678"}</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <Mail size={20} className="text-stone-500 shrink-0" />
+            <span>{siteConfig.email || "info@sekolah.sch.id"}</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div>
+        <h3 class="text-white font-bold text-lg mb-6">Media Sosial</h3>
+        <div class="flex flex-wrap gap-4">
+          {siteConfig.socialMedia?.map((item) => {
+            const IconComponent = iconMap[item.platform as keyof typeof iconMap];
+            return (
+              <a 
+                href={item.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="w-10 h-10 bg-stone-800 rounded-full flex items-center justify-center hover:bg-amber-600 hover:text-white transition-all duration-300 transform hover:scale-110"
+                title={item.platform}
+              >
+                {item.platform === 'TikTok' ? (
+                  <svg 
+                    width="20" 
+                    height="20" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    stroke-width="2" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round"
+                  >
+                    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                  </svg>
+                ) : (
+                  IconComponent ? <IconComponent size={20} /> : <Star size={20} />
+                )}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+    
+    <div class="border-t border-stone-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-stone-500">
+      <p>&copy; {new Date().getFullYear()} {siteConfig.schoolName}. Hak Cipta Dilindungi.</p>
+      <div class="flex gap-8">
+        <a href="#" class="hover:text-white">Kebijakan Privasi</a>
+        <a href="#" class="hover:text-white">Syarat & Ketentuan</a>
+      </div>
+    </div>
+  </div>
+</footer>

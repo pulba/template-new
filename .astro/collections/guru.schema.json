@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "mapel": {
+      "type": "string"
+    },
+    "category": {
+      "default": "guru",
+      "type": "string",
+      "enum": [
+        "pimpinan",
+        "guru",
+        "staf",
+        "kontributor"
+      ]
+    },
+    "photo": {
+      "type": "string"
+    },
+    "order": {
+      "default": 10,
+      "type": "number"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "role"
+  ]
+}

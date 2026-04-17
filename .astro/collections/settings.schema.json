@@ -1,0 +1,380 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schoolName": {
+      "type": "string"
+    },
+    "schoolShortName": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "logoUrl": {
+      "type": "string"
+    },
+    "faviconUrl": {
+      "type": "string"
+    },
+    "whatsapp": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "email2": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "phone2": {
+      "type": "string"
+    },
+    "socialMedia": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "Facebook",
+              "Instagram",
+              "Youtube",
+              "Twitter",
+              "TikTok",
+              "LinkedIn",
+              "Github"
+            ]
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "platform",
+          "url"
+        ]
+      }
+    },
+    "address": {
+      "type": "string"
+    },
+    "openingHours": {
+      "type": "string"
+    },
+    "openingHoursSat": {
+      "type": "string"
+    },
+    "mapLatitude": {
+      "type": "number"
+    },
+    "mapLongitude": {
+      "type": "number"
+    },
+    "hero": {
+      "type": "object",
+      "properties": {
+        "heroTitle": {
+          "type": "string"
+        },
+        "heroSubtitle": {
+          "type": "string"
+        },
+        "heroImage": {
+          "type": "string"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "properties": {
+        "principalName": {
+          "type": "string"
+        },
+        "principalRole": {
+          "type": "string"
+        },
+        "principalImage": {
+          "type": "string"
+        },
+        "principalMessage": {
+          "type": "string"
+        },
+        "principalQuote": {
+          "type": "string"
+        },
+        "principalQuoteAuthor": {
+          "type": "string"
+        }
+      }
+    },
+    "stats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ]
+      }
+    },
+    "cabinetName": {
+      "type": "string"
+    },
+    "period": {
+      "type": "string"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "role",
+          "image"
+        ]
+      }
+    },
+    "departments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "head": {
+            "type": "string"
+          },
+          "secretary": {
+            "type": "string"
+          },
+          "staff": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "name",
+          "head",
+          "secretary"
+        ]
+      }
+    },
+    "headline": {
+      "type": "string"
+    },
+    "vision": {
+      "type": "string"
+    },
+    "missions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "historyBody": {
+      "type": "string"
+    },
+    "historyImage1": {
+      "type": "string"
+    },
+    "historyImage2": {
+      "type": "string"
+    },
+    "facilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "desc": {
+            "type": "string"
+          },
+          "img": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "desc",
+          "img"
+        ]
+      }
+    },
+    "curriculumTitle": {
+      "type": "string"
+    },
+    "curriculumDesc": {
+      "type": "string"
+    },
+    "curriculumFeatures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "curriculumImage": {
+      "type": "string"
+    },
+    "statsGraduation": {
+      "type": "string"
+    },
+    "statsUni": {
+      "type": "string"
+    },
+    "extraHeadline": {
+      "type": "string"
+    },
+    "extraDesc": {
+      "type": "string"
+    },
+    "extraGroups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "items"
+        ]
+      }
+    },
+    "awardsHeadline": {
+      "type": "string"
+    },
+    "awardsDesc": {
+      "type": "string"
+    },
+    "awardsTotal": {
+      "type": "string"
+    },
+    "featuredAwards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "year": {
+            "type": "string"
+          },
+          "img": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "category",
+          "year",
+          "img"
+        ]
+      }
+    },
+    "regHeadline": {
+      "type": "string"
+    },
+    "regDesc": {
+      "type": "string"
+    },
+    "regStepsTitle": {
+      "type": "string"
+    },
+    "regSteps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "desc": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "desc"
+        ]
+      }
+    },
+    "regRequirementsTitle": {
+      "type": "string"
+    },
+    "regRequirements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "regFormTitle": {
+      "type": "string"
+    },
+    "regFormDesc": {
+      "type": "string"
+    },
+    "regFeeTitle": {
+      "type": "string"
+    },
+    "regFeeDesc": {
+      "type": "string"
+    },
+    "regHelpTitle": {
+      "type": "string"
+    },
+    "regHelpDesc": {
+      "type": "string"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  }
+}
