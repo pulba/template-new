@@ -2,7 +2,7 @@ backend:
   name: github
   repo: pulba/template-new
   branch: main
-  base_url: https://oauth.YOUR-SUBDOMAIN.workers.dev # Replace with your Worker URL later
+  base_url: https://spmb-oauth.pulbagrup.workers.dev
   auth_endpoint: auth
 local_backend: true # Keep true for local development to work
 
