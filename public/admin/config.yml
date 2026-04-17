@@ -1,7 +1,10 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: pulba/template-new
   branch: main
-local_backend: true
+  base_url: https://oauth.YOUR-SUBDOMAIN.workers.dev # Replace with your Worker URL later
+  auth_endpoint: auth
+local_backend: true # Keep true for local development to work
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
