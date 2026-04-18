@@ -10,7 +10,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "clean": "rm -rf dist",
-    "lint": "astro check && tsc --noEmit"
+    "lint": "astro check && tsc --noEmit",
+    "deploy": "astro build && wrangler deploy",
+    "deploy:preview": "astro build && wrangler dev"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
